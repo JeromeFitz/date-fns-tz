@@ -139,7 +139,7 @@ import utcToZonedTime from 'date-fns-tz/utcToZonedTime'
 ### v1.0.8 (12 October 2019)
 
 - [BUGFIX] Not losing milliseconds when converting time zones. (#25)
-- [BUGFIX] Fix missing `_lib/convertToFP/index.js`. (#20)
+- [BUGFIX] Fix missing `_lib/convertToFP.js`. (#20)
 - [UPGRADE] Upgrade dependencies and match the `date-fns@2` build config.
 
 ### v1.0.6 (2 February 2019)
