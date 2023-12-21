@@ -1,1 +1,1 @@
-export { newDateUTC } from './newDateUTC'
+export { newDateUTC } from "./newDateUTC";

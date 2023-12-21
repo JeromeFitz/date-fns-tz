@@ -22,8 +22,9 @@
   "main": "./index.js",
   "module": "./index.mjs",
   "scripts": {
-    "test": "vitest run",
     "lint": "eslint .",
+    "prettier": "prettier . --write",
+    "test": "vitest run",
     "types": "tsc --noEmit",
     "zzz:build": "./scripts/build/build.sh",
     "zzz:package": "./scripts/build/package.sh",

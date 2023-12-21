@@ -1,7 +1,7 @@
-import type { OptionsWithTZ } from '../types.js'
-import { cloneObject } from '../_lib/cloneObject/index'
-import {format} from '../format/index'
-import {utcToZonedTime} from '../utcToZonedTime/utcToZonedTime'
+import type { OptionsWithTZ } from "../types.js";
+import { cloneObject } from "../_lib/cloneObject/index";
+import { format } from "../format/index";
+import { utcToZonedTime } from "../utcToZonedTime/utcToZonedTime";
 
 /**
  * @name formatInTimeZone
@@ -25,9 +25,14 @@ import {utcToZonedTime} from '../utcToZonedTime/utcToZonedTime'
  * @param {String} [options.timeZone=''] - used to specify the IANA time zone offset of a date String.
  * @returns {String} the formatted date string
  */
- function formatInTimeZone(date:Date | string | number, timeZone:string, formatStr:string, options?:OptionsWithTZ) {
-  const extendedOptions = cloneObject(options)
-  extendedOptions.timeZone = timeZone
-  return format(utcToZonedTime(date, timeZone), formatStr, extendedOptions)
+function formatInTimeZone(
+  date: Date | string | number,
+  timeZone: string,
+  formatStr: string,
+  options?: OptionsWithTZ,
+) {
+  const extendedOptions = cloneObject(options);
+  extendedOptions.timeZone = timeZone;
+  return format(utcToZonedTime(date, timeZone), formatStr, extendedOptions);
 }
-export { formatInTimeZone}
+export { formatInTimeZone };

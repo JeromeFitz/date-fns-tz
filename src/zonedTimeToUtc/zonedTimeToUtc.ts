@@ -1,9 +1,9 @@
-import {cloneObject} from '../_lib/cloneObject/index'
-import {toDate} from '../toDate/index'
-import {tzPattern} from '../_lib/tzPattern/index'
-import {tzParseTimezone} from '../_lib/tzParseTimezone/index'
-import {newDateUTC} from '../_lib/newDateUTC/index'
-import type { OptionsWithTZ } from '../types'
+import { cloneObject } from "../_lib/cloneObject/index";
+import { toDate } from "../toDate/index";
+import { tzPattern } from "../_lib/tzPattern/index";
+import { tzParseTimezone } from "../_lib/tzParseTimezone/index";
+import { newDateUTC } from "../_lib/newDateUTC/index";
+import type { OptionsWithTZ } from "../types";
 
 /**
  * @name zonedTimeToUtc
@@ -29,14 +29,18 @@ import type { OptionsWithTZ } from '../types'
  * const result = zonedTimeToUtc(new Date(2014, 5, 25, 10, 0, 0), 'America/Los_Angeles')
  * //=> 2014-06-25T17:00:00.000Z
  */
-function zonedTimeToUtc(date:Date | string | number, timeZone:string, options?:OptionsWithTZ) {
-  if (typeof date === 'string' && !date.match(tzPattern)) {
-    const extendedOptions = cloneObject(options)
-    extendedOptions.timeZone = timeZone
-    return toDate(date, extendedOptions)
+function zonedTimeToUtc(
+  date: Date | string | number,
+  timeZone: string,
+  options?: OptionsWithTZ,
+) {
+  if (typeof date === "string" && !date.match(tzPattern)) {
+    const extendedOptions = cloneObject(options);
+    extendedOptions.timeZone = timeZone;
+    return toDate(date, extendedOptions);
   }
 
-  const d = toDate(date, options)
+  const d = toDate(date, options);
 
   const utc = newDateUTC(
     d.getFullYear(),
@@ -45,12 +49,12 @@ function zonedTimeToUtc(date:Date | string | number, timeZone:string, options?:O
     d.getHours(),
     d.getMinutes(),
     d.getSeconds(),
-    d.getMilliseconds()
-  ).getTime()
+    d.getMilliseconds(),
+  ).getTime();
 
-  const offsetMilliseconds = tzParseTimezone(timeZone, new Date(utc))
+  const offsetMilliseconds = tzParseTimezone(timeZone, new Date(utc));
 
-  return new Date(utc + offsetMilliseconds)
+  return new Date(utc + offsetMilliseconds);
 }
 
-export { zonedTimeToUtc}
+export { zonedTimeToUtc };

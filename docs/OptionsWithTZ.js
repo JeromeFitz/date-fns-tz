@@ -73,6 +73,6 @@
  * var result = format(startOfWeek('+12345-12-15', options), 'EEEE, d MMMM yyyy', options)
  * //=> 'lundo, 10 decembro 12345'
  */
-var OptionsWithTZ = {}
+var OptionsWithTZ = {};
 
-module.exports = OptionsWithTZ
+module.exports = OptionsWithTZ;

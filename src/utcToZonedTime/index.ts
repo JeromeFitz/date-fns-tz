@@ -1,1 +1,1 @@
-export { utcToZonedTime } from './utcToZonedTime'
+export { utcToZonedTime } from "./utcToZonedTime";

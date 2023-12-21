@@ -1,1 +1,1 @@
-export { tzPattern } from './tzPattern'
+export { tzPattern } from "./tzPattern";

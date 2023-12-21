@@ -1,1 +1,1 @@
-export { tzParseTimezone } from './tzParseTimezone'
+export { tzParseTimezone } from "./tzParseTimezone";

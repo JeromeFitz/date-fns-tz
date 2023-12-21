@@ -1,1 +1,1 @@
-export { tzIntlTimeZoneName } from './tzIntlTimeZoneName'
+export { tzIntlTimeZoneName } from "./tzIntlTimeZoneName";

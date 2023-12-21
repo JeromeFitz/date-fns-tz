@@ -4,25 +4,27 @@
  * the date.
  */
 function tzIntlTimeZoneName(length, date, options) {
-  const dtf = getDTF(length, options.timeZone, options.locale)
+  const dtf = getDTF(length, options.timeZone, options.locale);
   // note: always true unless called
-  return dtf.formatToParts() ? partsTimeZone(dtf, date) : hackyTimeZone(dtf, date)
+  return dtf.formatToParts()
+    ? partsTimeZone(dtf, date)
+    : hackyTimeZone(dtf, date);
 }
 
 function partsTimeZone(dtf, date) {
-  const formatted = dtf.formatToParts(date)
+  const formatted = dtf.formatToParts(date);
 
   for (let i = formatted.length - 1; i >= 0; --i) {
-    if (formatted[i].type === 'timeZoneName') {
-      return formatted[i].value
+    if (formatted[i].type === "timeZoneName") {
+      return formatted[i].value;
     }
   }
 }
 
 function hackyTimeZone(dtf, date) {
-  const formatted = dtf.format(date).replace(/\u200E/g, '')
-  const tzNameMatch = / [\w-+ ]+$/.exec(formatted)
-  return tzNameMatch ? tzNameMatch[0].substr(1) : ''
+  const formatted = dtf.format(date).replace(/\u200E/g, "");
+  const tzNameMatch = / [\w-+ ]+$/.exec(formatted);
+  return tzNameMatch ? tzNameMatch[0].substr(1) : "";
 }
 
 // If a locale has been provided `en-US` is used as a fallback in case it is an
@@ -30,13 +32,13 @@ function hackyTimeZone(dtf, date) {
 function getDTF(length, timeZone, locale) {
   if (locale && !locale.code) {
     throw new Error(
-      "date-fns-tz error: Please set a language code on the locale object imported from date-fns, e.g. `locale.code = 'en-US'`"
-    )
+      "date-fns-tz error: Please set a language code on the locale object imported from date-fns, e.g. `locale.code = 'en-US'`",
+    );
   }
-  return new Intl.DateTimeFormat(locale ? [locale.code, 'en-US'] : undefined, {
+  return new Intl.DateTimeFormat(locale ? [locale.code, "en-US"] : undefined, {
     timeZone: timeZone,
     timeZoneName: length,
-  })
+  });
 }
 
-export { tzIntlTimeZoneName}
+export { tzIntlTimeZoneName };

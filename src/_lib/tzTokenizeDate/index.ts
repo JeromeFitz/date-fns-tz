@@ -1,1 +1,1 @@
-export { tzTokenizeDate } from './tzTokenizeDate'
+export { tzTokenizeDate } from "./tzTokenizeDate";

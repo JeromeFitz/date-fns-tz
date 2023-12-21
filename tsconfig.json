@@ -11,7 +11,7 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": false, // @todo
     "strictNullChecks": false, // @todo
-    "strictPropertyInitialization": false, // @todo
+    "strictPropertyInitialization": false // @todo
     // TODO: Enable these when we can:
     // "noUncheckedIndexedAccess": true,
     // "exactOptionalPropertyTypes": true

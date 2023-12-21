@@ -1,1 +1,1 @@
-export { formatInTimeZone} from './formatInTimeZone'
+export { formatInTimeZone } from "./formatInTimeZone";

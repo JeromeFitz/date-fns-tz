@@ -12,7 +12,7 @@ import type { FPArity, FPFn, FPFnInput } from "date-fns";
  *
  * @private
  */
- function convertToFP<Fn extends FPFnInput, Arity extends FPArity>(
+function convertToFP<Fn extends FPFnInput, Arity extends FPArity>(
   fn: Fn,
   arity: Arity,
   curriedArgs: unknown[] = [],
@@ -24,4 +24,4 @@ import type { FPArity, FPFn, FPFnInput } from "date-fns";
   ) as FPFn<Fn, Arity>;
 }
 
-export {convertToFP }
+export { convertToFP };

@@ -1,8 +1,8 @@
-const path = require('path')
+const path = require("path");
 
 /** @type {import('@date-fns/docs').DateFnsDocs.Config} */
 module.exports.config = {
-    package: "..",
+  package: "..",
 
   json: "../tmp/docs.json",
   categories: [
@@ -28,7 +28,6 @@ module.exports.config = {
     "Generic Helpers",
   ],
 
-
   kindsMap: {
     "src/constants/index.ts": {
       kind: "constants",
@@ -39,7 +38,7 @@ module.exports.config = {
 
   sharedDocs: [
     {
-      fullPath: path.join(__dirname, 'OptionsWithTZ.js'),
+      fullPath: path.join(__dirname, "OptionsWithTZ.js"),
     },
   ],
-}
+};

@@ -1,7 +1,7 @@
 import { readdir } from "fs/promises";
 import path from "path";
 
-const ignoredFiles = ['index.ts', 'test.ts', 'package.json']
+const ignoredFiles = ["index.ts", "test.ts", "package.json"];
 const ignorePattern = /^_|\./; // can't start with `_` or have a `.` in it
 const ignoredDirs = ["locale", "esm", "fp", "constants"];
 
@@ -18,7 +18,10 @@ export async function listFns(): Promise<FnFile[]> {
   return Promise.all(
     files
       .filter(
-        (file) => !ignorePattern.test(file) && !ignoredDirs.includes(file)  && !ignoredFiles.includes(file),
+        (file) =>
+          !ignorePattern.test(file) &&
+          !ignoredDirs.includes(file) &&
+          !ignoredFiles.includes(file),
       )
       .map((file) => ({
         name: file,

@@ -1,73 +1,76 @@
-import {tzTokenizeDate} from '../tzTokenizeDate/index'
-import {newDateUTC} from '../newDateUTC/index'
+import { tzTokenizeDate } from "../tzTokenizeDate/index";
+import { newDateUTC } from "../newDateUTC/index";
 
-const MILLISECONDS_IN_HOUR = 3600000
-const MILLISECONDS_IN_MINUTE = 60000
+const MILLISECONDS_IN_HOUR = 3600000;
+const MILLISECONDS_IN_MINUTE = 60000;
 
 const patterns = {
   timezone: /([Z+-].*)$/,
   timezoneZ: /^(Z)$/,
   timezoneHH: /^([+-]\d{2})$/,
   timezoneHHMM: /^([+-]\d{2}):?(\d{2})$/,
-}
+};
 
 // Parse various time zone offset formats to an offset in milliseconds
 function tzParseTimezone(timezoneString, date, isUtcDate?) {
-  let token
-  let absoluteOffset
+  let token;
+  let absoluteOffset;
 
   // Empty string
   if (!timezoneString) {
-    return 0
+    return 0;
   }
 
   // Z
-  token = patterns.timezoneZ.exec(timezoneString)
+  token = patterns.timezoneZ.exec(timezoneString);
   if (token) {
-    return 0
+    return 0;
   }
 
-  let hours
+  let hours;
 
   // ±hh
-  token = patterns.timezoneHH.exec(timezoneString)
+  token = patterns.timezoneHH.exec(timezoneString);
   if (token) {
-    hours = parseInt(token[1], 10)
+    hours = parseInt(token[1], 10);
 
-    if (!validateTimezone(hours,0)) {
-      return NaN
+    if (!validateTimezone(hours, 0)) {
+      return NaN;
     }
 
-    return -(hours * MILLISECONDS_IN_HOUR)
+    return -(hours * MILLISECONDS_IN_HOUR);
   }
 
   // ±hh:mm or ±hhmm
-  token = patterns.timezoneHHMM.exec(timezoneString)
+  token = patterns.timezoneHHMM.exec(timezoneString);
   if (token) {
-    hours = parseInt(token[1], 10)
-    const minutes = parseInt(token[2], 10)
+    hours = parseInt(token[1], 10);
+    const minutes = parseInt(token[2], 10);
 
     if (!validateTimezone(hours, minutes)) {
-      return NaN
+      return NaN;
     }
 
-    absoluteOffset = Math.abs(hours) * MILLISECONDS_IN_HOUR + minutes * MILLISECONDS_IN_MINUTE
-    return hours > 0 ? -absoluteOffset : absoluteOffset
+    absoluteOffset =
+      Math.abs(hours) * MILLISECONDS_IN_HOUR + minutes * MILLISECONDS_IN_MINUTE;
+    return hours > 0 ? -absoluteOffset : absoluteOffset;
   }
 
   // IANA time zone
   if (isValidTimezoneIANAString(timezoneString)) {
-    date = new Date(date || Date.now())
-    const utcDate = isUtcDate ? date : toUtcDate(date)
+    date = new Date(date || Date.now());
+    const utcDate = isUtcDate ? date : toUtcDate(date);
 
-    const offset = calcOffset(utcDate, timezoneString)
+    const offset = calcOffset(utcDate, timezoneString);
 
-    const fixedOffset = isUtcDate ? offset : fixOffset(date, offset, timezoneString)
+    const fixedOffset = isUtcDate
+      ? offset
+      : fixOffset(date, offset, timezoneString);
 
-    return -fixedOffset
+    return -fixedOffset;
   }
 
-  return NaN
+  return NaN;
 }
 
 function toUtcDate(date) {
@@ -78,12 +81,12 @@ function toUtcDate(date) {
     date.getHours(),
     date.getMinutes(),
     date.getSeconds(),
-    date.getMilliseconds()
-  )
+    date.getMilliseconds(),
+  );
 }
 
 function calcOffset(date, timezoneString) {
-  const tokens = tzTokenizeDate(date, timezoneString)
+  const tokens = tzTokenizeDate(date, timezoneString);
 
   // ms dropped because it's not provided by tzTokenizeDate
   const asUTC = newDateUTC(
@@ -97,56 +100,60 @@ function calcOffset(date, timezoneString) {
     tokens[3] % 24,
     tokens[4],
     tokens[5],
-    0
-  ).getTime()
+    0,
+  ).getTime();
 
-  let asTS = date.getTime()
-  const over = asTS % 1000
-  asTS -= over >= 0 ? over : 1000 + over
-  return asUTC - asTS
+  let asTS = date.getTime();
+  const over = asTS % 1000;
+  asTS -= over >= 0 ? over : 1000 + over;
+  return asUTC - asTS;
 }
 
 function fixOffset(date, offset, timezoneString) {
-  const localTS = date.getTime()
+  const localTS = date.getTime();
 
   // Our UTC time is just a guess because our offset is just a guess
-  let utcGuess = localTS - offset
+  let utcGuess = localTS - offset;
 
   // Test whether the zone matches the offset for this ts
-  const o2 = calcOffset(new Date(utcGuess), timezoneString)
+  const o2 = calcOffset(new Date(utcGuess), timezoneString);
 
   // If so, offset didn't change, and we're done
   if (offset === o2) {
-    return offset
+    return offset;
   }
 
   // If not, change the ts by the difference in the offset
-  utcGuess -= o2 - offset
+  utcGuess -= o2 - offset;
 
   // If that gives us the local time we want, we're done
-  const o3 = calcOffset(new Date(utcGuess), timezoneString)
+  const o3 = calcOffset(new Date(utcGuess), timezoneString);
   if (o2 === o3) {
-    return o2
+    return o2;
   }
 
   // If it's different, we're in a hole time. The offset has changed, but we don't adjust the time
-  return Math.max(o2, o3)
+  return Math.max(o2, o3);
 }
 
 function validateTimezone(hours, minutes) {
-  return -23 <= hours && hours <= 23 && (minutes == null || (0 <= minutes && minutes <= 59))
+  return (
+    -23 <= hours &&
+    hours <= 23 &&
+    (minutes == null || (0 <= minutes && minutes <= 59))
+  );
 }
 
-const validIANATimezoneCache = {}
+const validIANATimezoneCache = {};
 function isValidTimezoneIANAString(timeZoneString) {
-  if (validIANATimezoneCache[timeZoneString]) return true
+  if (validIANATimezoneCache[timeZoneString]) return true;
   try {
-    new Intl.DateTimeFormat(undefined, { timeZone: timeZoneString })
-    validIANATimezoneCache[timeZoneString] = true
-    return true
+    new Intl.DateTimeFormat(undefined, { timeZone: timeZoneString });
+    validIANATimezoneCache[timeZoneString] = true;
+    return true;
   } catch (error) {
-    return false
+    return false;
   }
 }
 
-export { tzParseTimezone}
+export { tzParseTimezone };

@@ -1,6 +1,6 @@
-import type { OptionsWithTZ } from '../types'
-import {tzParseTimezone} from '../_lib/tzParseTimezone/index'
-import {toDate} from '../toDate/index'
+import type { OptionsWithTZ } from "../types";
+import { tzParseTimezone } from "../_lib/tzParseTimezone/index";
+import { toDate } from "../toDate/index";
 
 /**
  * @name utcToZonedTime
@@ -26,20 +26,29 @@ import {toDate} from '../toDate/index'
  * const result = utcToZonedTime('2014-06-25T10:00:00.000Z', 'America/New_York')
  * //=> Jun 25 2014 06:00:00
  */
-function utcToZonedTime(dirtyDate:Date | string | number, timeZone:string, options?:OptionsWithTZ) {
-  const date = toDate(dirtyDate, options)
+function utcToZonedTime(
+  dirtyDate: Date | string | number,
+  timeZone: string,
+  options?: OptionsWithTZ,
+) {
+  const date = toDate(dirtyDate, options);
 
-  const offsetMilliseconds = tzParseTimezone(timeZone, date, true)
+  const offsetMilliseconds = tzParseTimezone(timeZone, date, true);
 
-  const d = new Date(date.getTime() - offsetMilliseconds)
+  const d = new Date(date.getTime() - offsetMilliseconds);
 
-  const resultDate = new Date(0)
+  const resultDate = new Date(0);
 
-  resultDate.setFullYear(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate())
+  resultDate.setFullYear(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate());
 
-  resultDate.setHours(d.getUTCHours(), d.getUTCMinutes(), d.getUTCSeconds(), d.getUTCMilliseconds())
+  resultDate.setHours(
+    d.getUTCHours(),
+    d.getUTCMinutes(),
+    d.getUTCSeconds(),
+    d.getUTCMilliseconds(),
+  );
 
-  return resultDate
+  return resultDate;
 }
 
-export {  utcToZonedTime }
+export { utcToZonedTime };

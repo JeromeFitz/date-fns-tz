@@ -1,1 +1,1 @@
-export { toInteger } from './toInteger'
+export { toInteger } from "./toInteger";

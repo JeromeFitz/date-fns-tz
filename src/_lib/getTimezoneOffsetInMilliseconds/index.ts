@@ -1,1 +1,1 @@
-export { getTimezoneOffsetInMilliseconds} from './getTimezoneOffsetInMilliseconds'
+export { getTimezoneOffsetInMilliseconds } from "./getTimezoneOffsetInMilliseconds";
