@@ -24,7 +24,7 @@ env BABEL_ENV=esm npx babel src \
   --config-file ./babel.config.js \
   --source-root src \
   --out-dir "$dir" \
-  --ignore "**/test.ts","**/*.d.ts" \
+  --ignore "**/test.ts","**/*.test.ts","**/*.d.ts" \
   --extensions .mjs,.ts \
   --out-file-extension .mjs \
   --quiet
@@ -37,7 +37,7 @@ env BABEL_ENV=cjs npx babel src \
   --config-file ./babel.config.js \
   --source-root src \
   --out-dir "$dir" \
-  --ignore "**/test.ts","**/*.d.ts" \
+  --ignore "**/test.ts","**/*.test.ts","**/*.d.ts" \
   --extensions .mjs,.ts \
   --out-file-extension .js \
   --quiet

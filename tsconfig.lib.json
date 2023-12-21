@@ -12,6 +12,7 @@
     "config",
     "test.js",
     "**/test.ts",
+    "**/*.test.ts",
     "test",
     "scripts",
     "examples",

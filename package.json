@@ -117,5 +117,108 @@
     "vitest": "^0.34.6",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./index.js"
+      },
+      "import": {
+        "types": "./index.d.mts",
+        "default": "./index.mjs"
+      }
+    },
+    "./constants": {
+      "require": {
+        "types": "./constants.d.ts",
+        "default": "./constants.js"
+      },
+      "import": {
+        "types": "./constants.d.mts",
+        "default": "./constants.mjs"
+      }
+    },
+    "./locale": {
+      "require": {
+        "types": "./locale.d.ts",
+        "default": "./locale.js"
+      },
+      "import": {
+        "types": "./locale.d.mts",
+        "default": "./locale.mjs"
+      }
+    },
+    "./fp": {
+      "require": {
+        "types": "./fp.d.ts",
+        "default": "./fp.js"
+      },
+      "import": {
+        "types": "./fp.d.mts",
+        "default": "./fp.mjs"
+      }
+    },
+    "./format": {
+      "require": {
+        "types": "./format.d.ts",
+        "default": "./format.js"
+      },
+      "import": {
+        "types": "./format.d.mts",
+        "default": "./format.mjs"
+      }
+    },
+    "./formatInTimeZone": {
+      "require": {
+        "types": "./formatInTimeZone.d.ts",
+        "default": "./formatInTimeZone.js"
+      },
+      "import": {
+        "types": "./formatInTimeZone.d.mts",
+        "default": "./formatInTimeZone.mjs"
+      }
+    },
+    "./getTimezoneOffset": {
+      "require": {
+        "types": "./getTimezoneOffset.d.ts",
+        "default": "./getTimezoneOffset.js"
+      },
+      "import": {
+        "types": "./getTimezoneOffset.d.mts",
+        "default": "./getTimezoneOffset.mjs"
+      }
+    },
+    "./toDate": {
+      "require": {
+        "types": "./toDate.d.ts",
+        "default": "./toDate.js"
+      },
+      "import": {
+        "types": "./toDate.d.mts",
+        "default": "./toDate.mjs"
+      }
+    },
+    "./utcToZonedTime": {
+      "require": {
+        "types": "./utcToZonedTime.d.ts",
+        "default": "./utcToZonedTime.js"
+      },
+      "import": {
+        "types": "./utcToZonedTime.d.mts",
+        "default": "./utcToZonedTime.mjs"
+      }
+    },
+    "./zonedTimeToUtc": {
+      "require": {
+        "types": "./zonedTimeToUtc.d.ts",
+        "default": "./zonedTimeToUtc.js"
+      },
+      "import": {
+        "types": "./zonedTimeToUtc.d.mts",
+        "default": "./zonedTimeToUtc.mjs"
+      }
+    }
   }
 }
