@@ -806,12 +806,12 @@ describe('format', function () {
   })
 
   it('implicitly converts `formatString`', function () {
-    // eslint-disable-next-line no-new-wrappers
-    var formatString = new String('yyyy-MM-dd')
+
+    var formatString:any = new String('yyyy-MM-dd')
 
     var date = new Date(2014, 3, 4)
 
-    // $ExpectedMistake
+    // @ts-ignore
     assert(format(date, formatString) === '2014-04-04')
   })
 
@@ -829,7 +829,7 @@ describe('format', function () {
   //         },
   //       },
   //     }
-  //     // $ExpectedMistake
+  //     // @ts-ignore
   //     var result = format(date, 'PPPP', { locale: customLocale })
   //     assert(result === 'It works!')
   //   })
@@ -838,7 +838,7 @@ describe('format', function () {
   //     var customLocale = {
   //       formatLong: {},
   //     }
-  //     // $ExpectedMistake
+  //     // @ts-ignore
   //     var block = format.bind(null, date, 'yyyy-MM-dd', {
   //       locale: customLocale,
   //     })
@@ -847,10 +847,10 @@ describe('format', function () {
 
   //   it("throws `RangeError` if `options.locale` doesn't have `formatLong` property", function () {
   //     var customLocale = {
-  //       // $ExpectedMistake
+  //       // @ts-ignore
   //       localize: {},
   //     }
-  //     // $ExpectedMistake
+  //     // @ts-ignore
   //     var block = format.bind(null, date, 'yyyy-MM-dd', {
   //       locale: customLocale,
   //     })
@@ -859,7 +859,7 @@ describe('format', function () {
   // })
 
   // it('throws `RangeError` if `options.weekStartsOn` is not convertable to 0, 1, ..., 6 or undefined', function () {
-  //   // $ExpectedMistake
+  //   // @ts-ignore
   //   var block = format.bind(null, new Date(2007, 11 /* Dec */, 31), 'yyyy', {
   //     weekStartsOn: NaN,
   //   })
@@ -867,7 +867,7 @@ describe('format', function () {
   // })
 
   // it('throws `RangeError` if `options.firstWeekContainsDate` is not convertable to 1, 2, ..., 7 or undefined', function () {
-  //   // $ExpectedMistake
+  //   // @ts-ignore
   //   var block = format.bind(null, new Date(2007, 11 /* Dec */, 31), 'yyyy', {
   //     firstWeekContainsDate: NaN,
   //   })

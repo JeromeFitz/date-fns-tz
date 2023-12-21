@@ -7,7 +7,11 @@
     "moduleResolution": "NodeNext",
     "noImplicitAny": false, // @todo(lint)
     "skipLibCheck": true,
-    "strict": true
+    "strict": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": false, // @todo(lint)
+    "strictNullChecks": false, // @todo(lint)
+    "strictPropertyInitialization": false, // @todo(lint)
     // TODO: Enable these when we can:
     // "noUncheckedIndexedAccess": true,
     // "exactOptionalPropertyTypes": true

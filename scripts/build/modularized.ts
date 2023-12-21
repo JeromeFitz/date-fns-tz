@@ -54,7 +54,7 @@ const fnRe = /^\w+\/index.mjs/;
 const localeRe = /^locale\/[\w-]+\/index.mjs/;
 const fpFn = /^fp\/\w+\/index.mjs/;
 const fnExceptions = [
-  "constants/index.mjs",
+  // "constants/index.mjs",
   "locale/index.mjs",
   "fp/index.mjs",
 ];

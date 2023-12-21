@@ -219,6 +219,96 @@
         "types": "./zonedTimeToUtc.d.mts",
         "default": "./zonedTimeToUtc.mjs"
       }
+    },
+    "./fp/format": {
+      "require": {
+        "types": "./fp/format.d.ts",
+        "default": "./fp/format.js"
+      },
+      "import": {
+        "types": "./fp/format.d.mts",
+        "default": "./fp/format.mjs"
+      }
+    },
+    "./fp/formatInTimeZone": {
+      "require": {
+        "types": "./fp/formatInTimeZone.d.ts",
+        "default": "./fp/formatInTimeZone.js"
+      },
+      "import": {
+        "types": "./fp/formatInTimeZone.d.mts",
+        "default": "./fp/formatInTimeZone.mjs"
+      }
+    },
+    "./fp/formatInTimeZoneWithOptions": {
+      "require": {
+        "types": "./fp/formatInTimeZoneWithOptions.d.ts",
+        "default": "./fp/formatInTimeZoneWithOptions.js"
+      },
+      "import": {
+        "types": "./fp/formatInTimeZoneWithOptions.d.mts",
+        "default": "./fp/formatInTimeZoneWithOptions.mjs"
+      }
+    },
+    "./fp/getTimezoneOffset": {
+      "require": {
+        "types": "./fp/getTimezoneOffset.d.ts",
+        "default": "./fp/getTimezoneOffset.js"
+      },
+      "import": {
+        "types": "./fp/getTimezoneOffset.d.mts",
+        "default": "./fp/getTimezoneOffset.mjs"
+      }
+    },
+    "./fp/toDate": {
+      "require": {
+        "types": "./fp/toDate.d.ts",
+        "default": "./fp/toDate.js"
+      },
+      "import": {
+        "types": "./fp/toDate.d.mts",
+        "default": "./fp/toDate.mjs"
+      }
+    },
+    "./fp/utcToZonedTime": {
+      "require": {
+        "types": "./fp/utcToZonedTime.d.ts",
+        "default": "./fp/utcToZonedTime.js"
+      },
+      "import": {
+        "types": "./fp/utcToZonedTime.d.mts",
+        "default": "./fp/utcToZonedTime.mjs"
+      }
+    },
+    "./fp/utcToZonedTimeWithOptions": {
+      "require": {
+        "types": "./fp/utcToZonedTimeWithOptions.d.ts",
+        "default": "./fp/utcToZonedTimeWithOptions.js"
+      },
+      "import": {
+        "types": "./fp/utcToZonedTimeWithOptions.d.mts",
+        "default": "./fp/utcToZonedTimeWithOptions.mjs"
+      }
+    },
+    "./fp/zonedTimeToUtc": {
+      "require": {
+        "types": "./fp/zonedTimeToUtc.d.ts",
+        "default": "./fp/zonedTimeToUtc.js"
+      },
+      "import": {
+        "types": "./fp/zonedTimeToUtc.d.mts",
+        "default": "./fp/zonedTimeToUtc.mjs"
+      }
+    },
+    "./fp/zonedTimeToUtcWithOptions": {
+      "require": {
+        "types": "./fp/zonedTimeToUtcWithOptions.d.ts",
+        "default": "./fp/zonedTimeToUtcWithOptions.js"
+      },
+      "import": {
+        "types": "./fp/zonedTimeToUtcWithOptions.d.mts",
+        "default": "./fp/zonedTimeToUtcWithOptions.mjs"
+      }
     }
   }
 }

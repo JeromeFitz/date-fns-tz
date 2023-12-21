@@ -79,7 +79,7 @@ function getFPFn(sourceName: string, fnName: string, arity: number): string {
   return `// This file is generated automatically by \`scripts/build/fp.ts\`. Please, don't change it.
 
 import { ${sourceName} as fn } from "../../${sourceName}/index.js";
-import { convertToFP } from "../_lib/convertToFP/index.js";
+import { convertToFP } from "../../_lib/convertToFP";
 
 export const ${fnName} = convertToFP(fn, ${arity});
 `;

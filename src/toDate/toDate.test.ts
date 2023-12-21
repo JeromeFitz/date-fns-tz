@@ -288,10 +288,13 @@ describe('toDate', function () {
           ['America/New_York', '2020-11-01T03:00:00', new Date('2020-11-01T03:00:00-05:00')],
           ['Canada/Mountain', '2021-03-14T02:30:00', new Date('2021-03-14T02:30:00-06:00')],
         ].forEach(([timeZone, dateStr, expectedDate, alternativeDate]) => {
+          // @ts-expect-error
           var result:any = toDate(dateStr, { timeZone })
           if (alternativeDate) {
             assert(
+              // @ts-expect-error
               result.getTime() === expectedDate.getTime() ||
+              // @ts-expect-error
                 result.getTime() === alternativeDate.getTime()
             )
           } else {
@@ -439,28 +442,28 @@ describe('toDate', function () {
     })
 
     it('returns Invalid Date if argument is null', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(null)
       assert(result instanceof Date)
       assert(isNaN(result))
     })
 
     it('returns Invalid Date if argument is undefined', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(undefined)
       assert(result instanceof Date)
       assert(isNaN(result))
     })
 
     it('returns Invalid Date if argument is false', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(false)
       assert(result instanceof Date)
       assert(isNaN(result))
     })
 
     it('returns Invalid Date if argument is true', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(true)
       assert(result instanceof Date)
       assert(isNaN(result))
@@ -471,7 +474,7 @@ describe('toDate', function () {
     it('implicitly converts instance of Number into a number', function () {
       // eslint-disable-next-line no-new-wrappers
       var timestamp = new Number(new Date(2016, 0, 1, 23, 30, 45, 123).getTime())
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(timestamp)
       assert.deepEqual(result, new Date(2016, 0, 1, 23, 30, 45, 123))
     })
@@ -479,19 +482,19 @@ describe('toDate', function () {
     it('implicitly converts instance of String into a string', function () {
       // eslint-disable-next-line no-new-wrappers
       var dateString = new String('2014-02-11')
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate(dateString)
       assert.deepEqual(result, new Date(2014, 1, /* Feb */ 11))
     })
 
     it('implicitly converts options', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var result:any = toDate('+12340702', { additionalDigits: '0' })
       assert.deepEqual(result, new Date(1234, 6 /* Jul */, 2))
     })
 
     it('throws `RangeError` if `options.additionalDigits` is not convertable to 0, 1, 2 or undefined`', function () {
-      // $ExpectedMistake
+      // @ts-ignore
       var block = toDate.bind(null, '+12340702', { additionalDigits: 3 })
       assert.throws(block, RangeError)
     })

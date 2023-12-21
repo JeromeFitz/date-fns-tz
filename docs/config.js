@@ -2,7 +2,10 @@ const path = require('path')
 
 /** @type {import('@date-fns/docs').DateFnsDocs.Config} */
 module.exports.config = {
-  groups: [
+    package: "..",
+
+  json: "../tmp/docs.json",
+  categories: [
     "General",
     "Misc",
     "Common Helpers",
@@ -25,6 +28,13 @@ module.exports.config = {
     "Generic Helpers",
   ],
 
+
+  kindsMap: {
+    "src/constants/index.ts": {
+      kind: "constants",
+      category: "Misc",
+    },
+  },
   staticDocs: [],
 
   sharedDocs: [
