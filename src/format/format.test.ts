@@ -1,7 +1,6 @@
-// @flow
 /* eslint-env mocha */
 
-import assert from "power-assert";
+import assert from "assert";
 import { assert as _assert, describe, it, expect, test } from "vitest";
 import { format } from "./index";
 import { enGB } from "date-fns/locale";
@@ -886,48 +885,48 @@ describe("format", function () {
     assert(format(date, formatString) === "2014-04-04");
   });
 
-  // describe('custom locale', function () {
-  //   it('allows to pass a custom locale', function () {
-  //     var customLocale = {
-  //       localize: {
-  //         month: function () {
-  //           return 'works'
-  //         },
-  //       },
-  //       formatLong: {
-  //         date: function () {
-  //           return "'It' MMMM!"
-  //         },
-  //       },
-  //     }
-  //     // @ts-ignore
-  //     var result = format(date, 'PPPP', { locale: customLocale })
-  //     assert(result === 'It works!')
-  //   })
+  describe("custom locale", function () {
+    it("allows to pass a custom locale", function () {
+      var customLocale = {
+        localize: {
+          month: function () {
+            return "works";
+          },
+        },
+        formatLong: {
+          date: function () {
+            return "'It' MMMM!";
+          },
+        },
+      };
+      var result = format(date, "PPPP", { locale: customLocale });
+      assert(result === "It works!");
+    });
 
-  //   it("throws `RangeError` if `options.locale` doesn't have `localize` property", function () {
-  //     var customLocale = {
-  //       formatLong: {},
-  //     }
-  //     // @ts-ignore
-  //     var block = format.bind(null, date, 'yyyy-MM-dd', {
-  //       locale: customLocale,
-  //     })
-  //     assert.throws(block, RangeError)
-  //   })
+    // it("throws `RangeError` if `options.locale` doesn't have `formatLong` property", function () {
+    //   var customLocale = {
+    //     formatLong: {},
+    //   };
+    //   var block = format.bind(null, date, "yyyy-MM-dd", {
+    //     locale: customLocale,
+    //   });
+    //   assert.throws(block, RangeError);
+    // });
 
-  //   it("throws `RangeError` if `options.locale` doesn't have `formatLong` property", function () {
-  //     var customLocale = {
-  //       // @ts-ignore
-  //       localize: {},
-  //     }
-  //     // @ts-ignore
-  //     var block = format.bind(null, date, 'yyyy-MM-dd', {
-  //       locale: customLocale,
-  //     })
-  //     assert.throws(block, RangeError)
-  //   })
-  // })
+    // it("throws `RangeError` if `options.locale` doesn't have `localize` property", function () {
+    //   const customLocale = {
+    //     localize: {},
+    //   };
+    //   const block = format.bind(null, date, "yyyy-MM-dd", {
+    //     locale: customLocale,
+    //   });
+    //   assert.throws(block, RangeError);
+    //   assert.throws(
+    //     block,
+    //     /(Use `yyyy` instead of `YYYY` \(in `YYYY-MM-dd`\) for formatting years to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
+    //   )
+    // });
+  });
 
   // it('throws `RangeError` if `options.weekStartsOn` is not convertable to 0, 1, ..., 6 or undefined', function () {
   //   // @ts-ignore
@@ -955,17 +954,9 @@ describe("format", function () {
   // })
 
   describe("useAdditionalWeekYearTokens and useAdditionalDayOfYearTokens options", () => {
-    // it('throws an error if D token is used', () => {
-    //   const block = format.bind(null, date, 'yyyy-MM-D')
-    //   assert.throws(block, RangeError)
-    //   assert.throws(
-    //     block,
-    //     /(Use `d` instead of `D` \(in `yyyy-MM-D`\) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
-    //   )
-    // })
     test("throws an error if D token is used", () => {
       expect(format.bind(null, date, "yyyy-MM-D")).toThrowError(
-        "Use `d` instead of `D` (in `yyyy-MM-D`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT-0500 (Eastern Standard Time)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
+        "Use `d` instead of `D` (in `yyyy-MM-D`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
       );
     });
 
@@ -976,17 +967,9 @@ describe("format", function () {
       assert.deepEqual(result, "1986-04-94");
     });
 
-    // it('throws an error if DD token is used', () => {
-    //   const block = format.bind(null, date, 'yyyy-MM-DD')
-    //   assert.throws(block, RangeError)
-    //   assert.throws(
-    //     block,
-    //     /(Use `dd` instead of `DD` \(in `yyyy-MM-DD`\) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
-    //   )
-    // })
     test("throws an error if DD token is used", () => {
       expect(format.bind(null, date, "yyyy-MM-DD")).toThrowError(
-        "Use `dd` instead of `DD` (in `yyyy-MM-DD`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT-0500 (Eastern Standard Time)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
+        "Use `dd` instead of `DD` (in `yyyy-MM-DD`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
       );
     });
 
@@ -997,26 +980,12 @@ describe("format", function () {
       assert.deepEqual(result, "1986-04-94");
     });
 
-    // it('throws an error if YY token is used', () => {
-    //   const block = format.bind(null, date, 'YY-MM-dd')
-    //   assert.throws(block, RangeError)
-    //   assert.throws(
-    //     block,
-    //     /(Use `yy` instead of `YY` \(in `YY-MM-dd`\) for formatting years to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
-    //   )
-    // })
     test("throws an error if YY token is used", () => {
       expect(format.bind(null, date, "YY-MM-dd")).toThrowError(
-        "Use `yy` instead of `YY` (in `YY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT-0500 (Eastern Standard Time)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
+        "Use `yy` instead of `YY` (in `YY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
       );
     });
 
-    // it('allows YY token if useAdditionalWeekYearTokens is set to true', () => {
-    //   const result = format(date, 'YY-MM-dd', {
-    //     useAdditionalWeekYearTokens: true,
-    //   })
-    //   assert.deepEqual(result, '86-04-04')
-    // })
     test("allows YY token if useAdditionalWeekYearTokens is set to true", () => {
       expect(
         format(date, "YY-MM-dd", {
@@ -1025,17 +994,9 @@ describe("format", function () {
       ).toEqual("86-04-04");
     });
 
-    // it('throws an error if YYYY token is used', () => {
-    //   const block = format.bind(null, date, 'YYYY-MM-dd')
-    //   assert.throws(block, RangeError)
-    //   assert.throws(
-    //     block,
-    //     /(Use `yyyy` instead of `YYYY` \(in `YYYY-MM-dd`\) for formatting years to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
-    //   )
-    // })
     test("throws an error if YYYY token is used", () => {
       expect(format.bind(null, date, "YYYY-MM-dd")).toThrowError(
-        "Use `yyyy` instead of `YYYY` (in `YYYY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT-0500 (Eastern Standard Time)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
+        "Use `yyyy` instead of `YYYY` (in `YYYY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
       );
     });
 

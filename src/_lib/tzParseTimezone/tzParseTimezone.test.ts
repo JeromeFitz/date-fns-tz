@@ -1,4 +1,4 @@
-import assert from "power-assert";
+import assert from "assert";
 import { describe, it } from "vitest";
 import { tzParseTimezone } from "./index";
 

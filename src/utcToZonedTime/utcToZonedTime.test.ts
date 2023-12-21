@@ -1,4 +1,4 @@
-import assert from "power-assert";
+import assert from "assert";
 import { format } from "date-fns/format";
 import { describe, it } from "vitest";
 import { utcToZonedTime } from "./index";
