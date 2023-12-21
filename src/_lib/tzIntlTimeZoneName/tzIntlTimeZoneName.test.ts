@@ -1,5 +1,6 @@
 import assert from "power-assert";
-import tzIntlTimeZoneName from ".";
+import { describe, it } from "vitest";
+import { tzIntlTimeZoneName } from "./index";
 
 describe("tzIntlTimeZoneName", function () {
   it("returns the short time zone name", function () {

@@ -12,7 +12,7 @@ const patterns = {
 };
 
 // Parse various time zone offset formats to an offset in milliseconds
-function tzParseTimezone(timezoneString, date, isUtcDate?) {
+function tzParseTimezone(timezoneString, date?, isUtcDate?) {
   let token;
   let absoluteOffset;
 
