@@ -5,17 +5,17 @@
     "lib": ["dom", "es2020", "es2018.promise", "ESNext.Intl"],
     "module": "NodeNext",
     "moduleResolution": "NodeNext",
-    "noImplicitAny": false, // @todo(lint)
+    "noImplicitAny": false, // @todo
     "skipLibCheck": true,
     "strict": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": false, // @todo(lint)
-    "strictNullChecks": false, // @todo(lint)
-    "strictPropertyInitialization": false, // @todo(lint)
+    "strictFunctionTypes": false, // @todo
+    "strictNullChecks": false, // @todo
+    "strictPropertyInitialization": false, // @todo
     // TODO: Enable these when we can:
     // "noUncheckedIndexedAccess": true,
     // "exactOptionalPropertyTypes": true
   },
-  "include": ["src/**/*.ts", "scripts/**/*.ts", "test/**/*.ts"],
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist", "tmp", "examples"]
 }

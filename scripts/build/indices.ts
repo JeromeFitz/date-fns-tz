@@ -10,6 +10,7 @@
 import { writeFile, readFile } from "fs/promises";
 import { listFns } from "../_lib/listFns.js";
 import { listFPFns } from "../_lib/listFPFns.js";
+import { listLocales } from "../_lib/listLocales.js";
 
 interface File {
   name: string;
@@ -18,12 +19,12 @@ interface File {
 }
 
 (async () => {
-  // const locales = await listLocales();
+  const locales = await listLocales();
   const fns = await listFns();
   const fpFns = await listFPFns();
 
   await Promise.all([
-    generatePackageJSON({ fns, fpFns,  }).then((json) =>
+    generatePackageJSON({ fns, fpFns, locales }).then((json) =>
       writeFile("package.json", json)
     ),
 
@@ -31,7 +32,7 @@ interface File {
 
     writeFile("src/fp/index.ts", generateIndex({ files: fpFns, isFP: true })),
 
-    // writeFile("src/locale/index.ts", generateIndex({ files: locales })),
+    writeFile("src/locale/index.ts", generateIndexLocale({ files: locales })),
 
     writeFile("typedoc.json", generateTypeDoc(fns)),
   ]);
@@ -40,13 +41,13 @@ interface File {
 interface GeneratePackageJSONProps {
   fns: File[];
   fpFns: File[];
-  // locales: File[];
+  locales: File[];
 }
 
 async function generatePackageJSON({
   fns,
   fpFns,
-  // locales,
+  locales,
 }: GeneratePackageJSONProps) {
   const packageJSON = JSON.parse(await readFile("package.json", "utf-8"));
   packageJSON.exports = Object.fromEntries(
@@ -69,7 +70,7 @@ async function generatePackageJSON({
       .concat(mapExports(["./constants", "./locale", "./fp"], "."))
       .concat(mapExports(mapFiles(fns)))
       .concat(mapExports(mapFiles(fpFns), "./fp"))
-      // .concat(mapExports(mapFiles(locales), "./locale"))
+      .concat(mapExports(mapFiles(locales), "./locale"))
   );
   return JSON.stringify(packageJSON, null, 2);
 }
@@ -105,6 +106,17 @@ interface GenerateIndexProps {
 function generateIndex({ files, isFP }: GenerateIndexProps): string {
   const lines = files
     .map((file) => `export * from "${file.path}/index.js";`)
+    .concat(`export type * from "${isFP ? ".." : "."}/types.js";`);
+
+  return `// This file is generated automatically by \`scripts/build/indices.ts\`. Please, don't change it.
+
+${lines.join("\n")}
+`;
+}
+
+function generateIndexLocale({ files, isFP }: GenerateIndexProps): string {
+  const lines = files
+    .map((file) => `export { ${file.name} } from "date-fns/locale";`)
     .concat(`export type * from "${isFP ? ".." : "."}/types.js";`);
 
   return `// This file is generated automatically by \`scripts/build/indices.ts\`. Please, don't change it.

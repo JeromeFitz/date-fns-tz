@@ -54,7 +54,15 @@ async function main() {
 }
 
 function getNewImportPath(filePath: string, relImportPath: string): string {
-  const importPath = resolvePath(filePath, relImportPath);
+
+  const isLocale = relImportPath === 'date-fns/locale'
+
+  const importPath =  resolvePath(filePath, relImportPath);
+
+  // console.dir(`---`)
+  // console.dir(`filePath: ${filePath}`)
+  // console.dir(`relImportPath: ${relImportPath}`)
+  // console.dir(`importPath: ${importPath}`)
 
   const newFilePath = getNewPath(filePath);
   const newFullImportPath = getNewPath(importPath);
@@ -62,7 +70,7 @@ function getNewImportPath(filePath: string, relImportPath: string): string {
   // Determine the relative path between newFilePath and newFullImportPath
   const newImportPath = relative(dirname(newFilePath), newFullImportPath);
 
-  return newImportPath.startsWith(".") ? newImportPath : "./" + newImportPath;
+  return isLocale ? 'date-fns/locale': newImportPath.startsWith(".") ? newImportPath : "./" + newImportPath;
 }
 
 const ignoreMove = [new RegExp(`^${relativeRoot}/index`)];

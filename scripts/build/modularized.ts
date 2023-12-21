@@ -23,11 +23,11 @@ async function addNextJSFallbacks(dir: string): Promise<void> {
 
     for (const file of files) {
       const fullPath = join(dir, file.name);
-      const relateivePath = fullPath.replace(root + "/", "");
+      const relativePath = fullPath.replace(root + "/", "");
 
       if (file.isDirectory()) {
         promises.push(addNextJSFallbacks(fullPath));
-      } else if (file.isFile() && isModule(relateivePath)) {
+      } else if (file.isFile() && isModule(relativePath)) {
         promises.push(
           readFile(fullPath, "utf8").then((content) =>
             writeFile(
@@ -36,7 +36,7 @@ async function addNextJSFallbacks(dir: string): Promise<void> {
                 `
 
 // Fallback for modularized imports:
-export default ${constName(relateivePath)};`,
+export default ${constName(relativePath)};`,
             ),
           ),
         );
@@ -51,24 +51,24 @@ export default ${constName(relateivePath)};`,
 }
 
 const fnRe = /^\w+\/index.mjs/;
-const localeRe = /^locale\/[\w-]+\/index.mjs/;
+const localeRe = /^locale/;
 const fpFn = /^fp\/\w+\/index.mjs/;
 const fnExceptions = [
-  // "constants/index.mjs",
+  "constants/index.mjs",
   "locale/index.mjs",
   "fp/index.mjs",
 ];
 
-function isModule(relateivePath: string) {
+function isModule(relativePath: string) {
   return (
-    !fnExceptions.includes(relateivePath) &&
-    (fnRe.test(relateivePath) ||
-      fpFn.test(relateivePath) ||
-      localeRe.test(relateivePath))
+    !fnExceptions.includes(relativePath) &&
+    (fnRe.test(relativePath) ||
+      fpFn.test(relativePath) ||
+      localeRe.test(relativePath))
   );
 }
 
-function constName(relateivePath: string) {
-  const base = basename(dirname(relateivePath));
-  return localeRe.test(relateivePath) ? convertLocaleToConst(base) : base;
+function constName(relativePath: string) {
+  const base = basename(dirname(relativePath));
+  return localeRe.test(relativePath) ? convertLocaleToConst(base) : base;
 }
