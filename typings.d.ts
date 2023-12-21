@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 // This file is generated automatically by `scripts/build/typings.js`. Please, don't change it.
 
 // FP Interfaces
@@ -25,7 +26,7 @@ interface CurriedFn4<A, B, C, D, R> {
 }
 
 declare module 'date-fns-tz' {
-  import { Locale } from 'date-fns'
+  import type { Locale } from 'date-fns/locale'
 
   export type OptionsWithTZ = {
     weekStartsOn?: 0 | 1 | 2 | 3 | 4 | 5 | 6
@@ -44,7 +45,7 @@ declare module 'date-fns-tz' {
 // Regular Functions
 
 declare module 'date-fns-tz' {
-  import { OptionsWithTZ } from 'date-fns-tz'
+  import type { OptionsWithTZ } from 'date-fns-tz'
 
   function format(date: Date | number, format: string, options?: OptionsWithTZ): string
   namespace format {}
@@ -171,7 +172,7 @@ declare module 'date-fns-tz/zonedTimeToUtc/index.js' {
 // FP Functions
 
 declare module 'date-fns-tz/fp' {
-  import { OptionsWithTZ } from 'date-fns-tz'
+  import type { OptionsWithTZ } from 'date-fns-tz'
 
   const format: CurriedFn2<string, Date | number, string>
   namespace format {}
@@ -381,7 +382,7 @@ declare module 'date-fns-tz/fp/zonedTimeToUtcWithOptions/index.js' {
 // ECMAScript Module Functions
 
 declare module 'date-fns-tz/esm' {
-  import { OptionsWithTZ } from 'date-fns-tz'
+  import type { OptionsWithTZ } from 'date-fns-tz'
 
   function format(date: Date | number, format: string, options?: OptionsWithTZ): string
   namespace format {}
@@ -508,7 +509,7 @@ declare module 'date-fns-tz/esm/zonedTimeToUtc/index.js' {
 // ECMAScript Module FP Functions
 
 declare module 'date-fns-tz/esm/fp' {
-  import { OptionsWithTZ } from 'date-fns-tz'
+  import type { OptionsWithTZ } from 'date-fns-tz'
 
   const format: CurriedFn2<string, Date | number, string>
   namespace format {}

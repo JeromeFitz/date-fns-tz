@@ -1,0 +1,1 @@
+export { newDateUTC } from './newDateUTC'

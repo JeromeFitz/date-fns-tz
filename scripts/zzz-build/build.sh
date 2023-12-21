@@ -6,6 +6,7 @@
 
 set -ex
 
-npx tsx ./scripts/build/indices.ts
-./scripts/build/docs.sh
-npx tsx ./scripts/build/fp.ts
+./scripts/build/docs.js
+./scripts/build/fp.js
+./scripts/build/typings.js
+./scripts/build/indices.js

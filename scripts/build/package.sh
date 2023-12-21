@@ -11,62 +11,62 @@ set -e
 root="$(pwd)/$(dirname "$0")/../.."
 cd "$root" || exit 1
 
-PATH="$(npm bin):$PATH"
 # XXX: $PACKAGE_OUTPUT_PATH must be an absolute path!
-dir=${PACKAGE_OUTPUT_PATH:-"$root/tmp/package"}
+dir=${PACKAGE_OUTPUT_PATH:-"$root/lib"}
+export PACKAGE_OUTPUT_PATH="$dir"
 
 # Clean up output dir
 rm -rf "$dir"
 mkdir -p "$dir"
 
-# Prepare ES5-compatible files
+# Transpile ESM versions of files
+env BABEL_ENV=esm npx babel src \
+  --config-file ./babel.config.js \
+  --source-root src \
+  --out-dir "$dir" \
+  --ignore "**/test.ts","**/*.d.ts" \
+  --extensions .mjs,.ts \
+  --out-file-extension .mjs \
+  --quiet
 
-# Compile ES files on top of the already copied files leaving
-# all non *.js files in place as expected
-babel src --source-root src --out-dir "$dir" --ignore test.js,benchmark.js --copy-files --quiet
+# Add fallback for Next.js and other tools that modularize imports:
+npx tsx scripts/build/modularized.ts
 
-# Copy ES (a.k.a. ES6, ES2016, ES2017, etc.) files
+# Transpile CommonJS versions of files
+env BABEL_ENV=cjs npx babel src \
+  --config-file ./babel.config.js \
+  --source-root src \
+  --out-dir "$dir" \
+  --ignore "**/test.ts","**/*.d.ts" \
+  --extensions .mjs,.ts \
+  --out-file-extension .js \
+  --quiet
 
-# Copy the source code
-for fnDir in $(find src -maxdepth 1 -mindepth 1 -type d | sed 's/src\///' | sed 's/\///')
-do
-  if [ "$fnDir" == "esm" ]
-  then
-    continue
-  fi
+# Generate TypeScript
+npx tsc --project tsconfig.lib.json --outDir "$dir"
 
-  cp -r "./src/$fnDir" "$dir/esm/"
-done
+if [ -n "$TEST_FLATTEN" ]; then
+  exit 0
+fi
 
-# Copy global flow typing
-cp ./src/index.js.flow "$dir/esm/index.js.flow"
+# Flatten the structure
+npx tsx scripts/build/flatten.ts
 
-# Copy esm indices
-cp ./src/esm/index.js "$dir/esm/index.js"
-cp ./src/esm/fp/index.js "$dir/esm/fp/index.js"
+# Generate .d.mts files
+npx tsx scripts/build/mts.ts
 
 # Copy basic files
-for pattern in package.json \
+for pattern in CHANGELOG.md \
+  package.json \
   docs \
   LICENSE.md \
   README.md \
-  typings.d.ts
+  SECURITY.md
 do
   cp -r "$pattern" "$dir"
 done
 
-# Clean up dev code
-find "$dir" -type f -name "test.js" -delete
-find "$dir" -type f -name "benchmark.js" -delete
-
-# Copy esm package.json
-cp ./src/esm/package.json "$dir/esm/package.json"
-
-# Rewrite import paths to use esm version of date-fns
-# todo Restore once date-fns supports ESM: https://github.com/date-fns/date-fns/issues/1781
-# for fnFile in $(find $dir/esm -maxdepth 3 -mindepth 2 -type f -name index.js)
-# do
-#   sed -i "s/from 'date-fns/from 'date-fns\/esm/" "$fnFile"
-# done
-
-./scripts/build/packages.js
+if [ -z "$PACKAGE_SKIP_BEAUTIFY" ]; then
+  # Make it prettier
+  npx prettier "$dir" --write --ignore-path "" > /dev/null 2>&1 || exit 1
+fi
