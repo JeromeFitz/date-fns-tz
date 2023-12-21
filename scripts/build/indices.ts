@@ -67,10 +67,11 @@ async function generatePackageJSON({
         },
       ],
     ]
-      .concat(mapExports(["./constants", "./locale", "./fp"], "."))
+      // .concat(mapExports(["./constants", "./locale", "./fp"], "."))
+      .concat(mapExports(["./constants", "./fp"], "."))
       .concat(mapExports(mapFiles(fns)))
       .concat(mapExports(mapFiles(fpFns), "./fp"))
-      .concat(mapExports(mapFiles(locales), "./locale"))
+      // .concat(mapExports(mapFiles(locales), "./locale"))
   );
   return JSON.stringify(packageJSON, null, 2);
 }
