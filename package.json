@@ -22,18 +22,13 @@
   "main": "./index.js",
   "module": "./index.mjs",
   "scripts": {
+    "build": "./scripts/build/build.sh",
+    "clean": "rm -rf ./lib && rm tmp/docs.json",
     "lint": "eslint .",
+    "package": "./scripts/build/package.sh",
     "prettier": "prettier . --write",
     "test": "vitest run",
-    "types": "tsc --noEmit",
-    "zzz:build": "./scripts/build/build.sh",
-    "zzz:package": "./scripts/build/package.sh",
-    "zzz:clean": "rm -rf tmp/package && rm tmp/docs.json",
-    "zzz:test": "cross-env NODE_OPTIONS=\"--openssl-legacy-provider\" karma start config/karma.js",
-    "zzz:test:watch": "cross-env TEST_WATCH=true NODE_OPTIONS=\"--openssl-legacy-provider\" karma start config/karma.js",
-    "zzz:prettier": "prettier . --write",
-    "zzz:lint": "eslint .",
-    "zzz:lint-types": "eslint --config=.ts-eslintrc.js typings.d.ts"
+    "types": "tsc --noEmit"
   },
   "husky": {
     "hooks": {
@@ -41,7 +36,7 @@
     }
   },
   "lint-staged": {
-    "*.js": [
+    "*.ts": [
       "eslint"
     ],
     "*.{js,json,md,ts}": [
