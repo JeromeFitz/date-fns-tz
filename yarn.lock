@@ -2710,7 +2710,7 @@ __metadata:
     babel-plugin-add-module-exports: ^1.0.4
     babel-preset-power-assert: ^3.0.0
     cross-env: ^7.0.3
-    date-fns: ^3.0.0
+    date-fns: ^3.0.3
     eslint: ^7.11.0
     eslint-config-prettier: ^7.2.0
     flow-bin: ^0.143.1
@@ -2742,10 +2742,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"date-fns@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "date-fns@npm:3.0.0"
-  checksum: 16d570c6a3b1c6caed67982bb7831daf666cd84be3150733abcd21cadd7757e8f05225c86edd3fe5a9d3a45cd61886ddd505aadfc937c400272a6ff5d8e163c3
+"date-fns@npm:^3.0.3":
+  version: 3.0.3
+  resolution: "date-fns@npm:3.0.3"
+  checksum: 1bc19abb9432d136b7e80b900795d4e19291c5028cf03d38314b22a5ced0047ce739a69905c24b03afbc10dbde74dc34df389e52df12eae0ee46aa42c30dbbc4
   languageName: node
   linkType: hard
 
