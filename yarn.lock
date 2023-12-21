@@ -2710,7 +2710,7 @@ __metadata:
     babel-plugin-add-module-exports: ^1.0.4
     babel-preset-power-assert: ^3.0.0
     cross-env: ^7.0.3
-    date-fns: ^2.23.0
+    date-fns: ^3.0.4
     eslint: ^7.11.0
     eslint-config-prettier: ^7.2.0
     flow-bin: ^0.143.1
@@ -2738,14 +2738,14 @@ __metadata:
     webpack: ^4.41.1
     webpack-cli: ^3.1.2
   peerDependencies:
-    date-fns: ">=2.0.0"
+    date-fns: ">=3.0.4"
   languageName: unknown
   linkType: soft
 
-"date-fns@npm:^2.23.0":
-  version: 2.23.0
-  resolution: "date-fns@npm:2.23.0"
-  checksum: 5b23cf7f08a27d0c1633e81304c95ac2bacb1160d86a25d36c40c84853796e442e597a4d75acec3f0920a71f3a65dd55b37565d356fa3fb4c2345225df42d930
+"date-fns@npm:^3.0.4":
+  version: 3.0.5
+  resolution: "date-fns@npm:3.0.5"
+  checksum: 67bd4f90276cda5b668abb470a9f216b2b76e646eaf2c976324ab238283e252d79d1089d922074d43bd18122f82d2c15f61c40d5fde0822671f6b63099ca33ab
   languageName: node
   linkType: hard
 

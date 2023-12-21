@@ -1,4 +1,4 @@
-import cloneObject from 'date-fns/_lib/cloneObject/index.js'
+import cloneObject from '../_lib/cloneObject/index.js'
 import format from '../format/index.js'
 import utcToZonedTime from '../utcToZonedTime/index.js'
 

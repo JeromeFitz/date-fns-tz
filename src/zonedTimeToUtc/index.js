@@ -1,4 +1,4 @@
-import cloneObject from 'date-fns/_lib/cloneObject/index.js'
+import cloneObject from '../_lib/cloneObject/index.js'
 import toDate from '../toDate/index.js'
 import tzPattern from '../_lib/tzPattern/index.js'
 import tzParseTimezone from '../_lib/tzParseTimezone/index.js'

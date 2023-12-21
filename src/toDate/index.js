@@ -1,5 +1,5 @@
-import toInteger from 'date-fns/_lib/toInteger/index.js'
-import getTimezoneOffsetInMilliseconds from 'date-fns/_lib/getTimezoneOffsetInMilliseconds/index.js'
+import toInteger from '../_lib/toInteger/index.js'
+import { getTimezoneOffsetInMilliseconds } from 'date-fns/_lib/getTimezoneOffsetInMilliseconds.js'
 import tzParseTimezone from '../_lib/tzParseTimezone/index.js'
 import tzPattern from '../_lib/tzPattern/index.js'
 
