@@ -64,7 +64,7 @@
  * @example
  * // For 15 December 12345 AD, represent the start of the week in Esperanto,
  * // if the first day of the week is Monday:
- * var eoLocale = require('date-fns/locale').eo
+ * var eoLocale = require('date-fns/locale/eo')
  * var options = {
  *   weekStartsOn: 1,
  *   additionalDigits: 1,

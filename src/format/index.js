@@ -303,7 +303,7 @@ var tzFormattingTokensRegExp = /([xXOz]+)|''|'(''|[^'])+('|$)/g
  *
  * @example
  * // Represent 2 July 2014 in Esperanto:
- * import { eoLocale } from 'date-fns/locale'
+ * import { eoLocale } from 'date-fns/locale/eo'
  * var result = format(new Date(2014, 6, 2), "do 'de' MMMM yyyy", {
  *   locale: eoLocale
  * })
