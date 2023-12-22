@@ -1,6 +1,6 @@
 /* eslint-env mocha */
 
-import assert from "assert";
+import assert, { AssertionError } from "assert";
 import { assert as _assert, describe, it, expect, test } from "vitest";
 import { format } from "./index";
 import { enGB } from "date-fns/locale";
@@ -34,12 +34,14 @@ describe("format", function () {
       : "GMT" + sign + hours + ":" + minutesLeadingZero + minutes;
   var timezoneGMT = "GMT" + timezone;
 
+  // @ts-ignore
   var timeZoneNameShort = Intl.DateTimeFormat(undefined, {
     timeZoneName: "short",
   })
     .format(date)
     .match(/ [\w-+ ]+$/)[0]
     .trim();
+  // @ts-ignore
   var timeZoneName = Intl.DateTimeFormat(undefined, { timeZoneName: "long" })
     .format(date)
     .match(/ [\w-+ ]+$/)[0]
@@ -54,6 +56,7 @@ describe("format", function () {
   var dateAndTimeZoneAmericaNY = "1986-04-04 10:32:55 EST";
 
   // These time zone names may change depending on the system locale where tests are run
+  // @ts-ignore
   var timezoneNameAmericaNYShort = Intl.DateTimeFormat(undefined, {
     timeZoneName: "short",
     timeZone: "America/New_York",
@@ -61,6 +64,7 @@ describe("format", function () {
     .format(date)
     .match(/ [\w-+ ]+$/)[0]
     .trim();
+  // @ts-ignore
   var timezoneNameAmericaNY = Intl.DateTimeFormat(undefined, {
     timeZoneName: "long",
     timeZone: "America/New_York",
@@ -68,6 +72,7 @@ describe("format", function () {
     .format(date)
     .match(/ [\w-+ ]+$/)[0]
     .trim();
+  // @ts-ignore
   var timezoneNameEuropeShortEnUs = Intl.DateTimeFormat(undefined, {
     timeZoneName: "short",
     timeZone: "Europe/Paris",
@@ -75,6 +80,7 @@ describe("format", function () {
     .format(date)
     .match(/ [\w-+ ]+$/)[0]
     .trim();
+  // @ts-ignore
   var timezoneNameEuropeEnUs = Intl.DateTimeFormat(undefined, {
     timeZoneName: "long",
     timeZone: "Europe/Paris",
@@ -301,6 +307,7 @@ describe("format", function () {
     it("returns a correct quarter for each month", function () {
       var result = [];
       for (var i = 0; i <= 11; i++) {
+        // @ts-ignore
         result.push(format(new Date(1986, i, 1), "Q"));
       }
       var expected = [
@@ -402,6 +409,7 @@ describe("format", function () {
       it("returns a correct day of an ISO week", function () {
         var result = [];
         for (var i = 1; i <= 7; i++) {
+          // @ts-ignore
           result.push(format(new Date(1986, 8 /* Sep */, i), "i"));
         }
         var expected = ["1", "2", "3", "4", "5", "6", "7"];
@@ -418,6 +426,7 @@ describe("format", function () {
       it("by default, 1 is Sunday, 2 is Monday, ...", function () {
         var result = [];
         for (var i = 7; i <= 13; i++) {
+          // @ts-ignore
           result.push(format(new Date(1986, 8 /* Sep */, i), "e"));
         }
         var expected = ["1", "2", "3", "4", "5", "6", "7"];
@@ -428,6 +437,7 @@ describe("format", function () {
         var result = [];
         for (var i = 1; i <= 7; i++) {
           result.push(
+            // @ts-ignore
             format(new Date(1986, 8 /* Sep */, i), "e", { weekStartsOn: 1 }),
           );
         }
@@ -445,6 +455,7 @@ describe("format", function () {
       it("by default, 1 is Sunday, 2 is Monday, ...", function () {
         var result = [];
         for (var i = 7; i <= 13; i++) {
+          // @ts-ignore
           result.push(format(new Date(1986, 8 /* Sep */, i), "c"));
         }
         var expected = ["1", "2", "3", "4", "5", "6", "7"];
@@ -455,6 +466,7 @@ describe("format", function () {
         var result = [];
         for (var i = 1; i <= 7; i++) {
           result.push(
+            // @ts-ignore
             format(new Date(1986, 8 /* Sep */, i), "c", { weekStartsOn: 1 }),
           );
         }
@@ -948,10 +960,21 @@ describe("format", function () {
     assert.throws(format.bind(null, date, "yyyy-MM-dd-nnnn"), RangeError);
   });
 
-  // it('throws TypeError exception if passed less than 2 arguments', function() {
-  //   assert.throws(format.bind(null), TypeError)
-  //   assert.throws(format.bind(null, 1), TypeError)
+  // it('throws `TypeError` exception if passed less than 2 arguments', function() {
+  //   assert.throws(format.bind(null), RangeError)
+  //   assert.throws(format.bind(null, 1), RangeError)
+  //   assert.throws(
+  //       () =>
+  //         format.bind(null),
+  //       /RangeError: Invalid time zone specified: bad\/timeZone$/,
+  //     );
   // })
+  test("throws `TypeError` exception if passed less than 2 arguments", () => {
+    expect(format.bind(null)).toThrowError("Invalid time value");
+    expect(format.bind(null, 1)).toThrowError(
+      "Format string contains an unescaped latin alphabet character `n`",
+    );
+  });
 
   describe("useAdditionalWeekYearTokens and useAdditionalDayOfYearTokens options", () => {
     test("throws an error if D token is used", () => {
