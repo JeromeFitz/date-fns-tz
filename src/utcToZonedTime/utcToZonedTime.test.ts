@@ -1,12 +1,14 @@
-import assert from "assert";
+import assert from "node:assert";
 import { format } from "date-fns/format";
 import { describe, it } from "vitest";
 import { utcToZonedTime } from "./index";
 import { newDateUTC } from "../_lib/newDateUTC";
 
+type Result = Date | number | string;
+
 describe("utcToZonedTime", function () {
   it("returns the equivalent date at the time zone for a date string and IANA tz", function () {
-    var result: any = utcToZonedTime(
+    const result: Result = utcToZonedTime(
       "2014-06-25T10:00:00.123Z",
       "America/New_York",
     );
@@ -17,7 +19,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("returns the equivalent date at the time zone for a date instance and IANA tz", function () {
-    var result: any = utcToZonedTime(
+    const result: Result = utcToZonedTime(
       new Date("2014-06-25T10:00:00.123Z"),
       "Europe/Paris",
     );
@@ -28,7 +30,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("returns the same date/time for UTC", function () {
-    var result: any = utcToZonedTime("2014-06-25T10:00:00.123Z", "UTC");
+    const result: Result = utcToZonedTime("2014-06-25T10:00:00.123Z", "UTC");
     assert.equal(
       format(result, "yyyy-MM-dd'T'HH:mm:ss.SSS"),
       "2014-06-25T10:00:00.123",
@@ -36,7 +38,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("returns the equivalent date at the time zone for a date string and tz offset", function () {
-    var result: any = utcToZonedTime("2014-06-25T10:00:00.123Z", "-04:00");
+    const result: Result = utcToZonedTime("2014-06-25T10:00:00.123Z", "-04:00");
     assert.equal(
       format(result, "yyyy-MM-dd'T'HH:mm:ss.SSS"),
       "2014-06-25T06:00:00.123",
@@ -44,7 +46,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("returns the equivalent date at the time zone for a date instance and tz offset", function () {
-    var result: any = utcToZonedTime(
+    const result: Result = utcToZonedTime(
       new Date("2014-06-25T10:00:00.123Z"),
       "+0200",
     );
@@ -55,7 +57,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("returns the same date/time for Z", function () {
-    var result: any = utcToZonedTime("2014-06-25T10:00:00.123Z", "Z");
+    const result: Result = utcToZonedTime("2014-06-25T10:00:00.123Z", "Z");
     assert.equal(
       format(result, "yyyy-MM-dd'T'HH:mm:ss.SSS"),
       "2014-06-25T10:00:00.123",
@@ -63,7 +65,7 @@ describe("utcToZonedTime", function () {
   });
 
   it("does not wrap to the following day when the result is midnight", function () {
-    var result: any = utcToZonedTime(
+    const result: Result = utcToZonedTime(
       new Date("Thu Jan 23 2020 05:00:00 GMT+0000 (Greenwich Mean Time)"),
       "America/New_York", // -5 hours
     );
@@ -75,7 +77,7 @@ describe("utcToZonedTime", function () {
 
   it("returns the correct date/time during time change", function () {
     // zoned time one day behind
-    var resultPDT = utcToZonedTime(
+    let resultPDT = utcToZonedTime(
       new Date("Sun Nov 1 2020 06:45:00 GMT-0000 (Greenwich Mean Time)"),
       "America/Los_Angeles", // -7 hours
     );
@@ -97,7 +99,7 @@ describe("utcToZonedTime", function () {
     );
 
     // 15 mins after time switch
-    var resultPST = utcToZonedTime(
+    const resultPST = utcToZonedTime(
       new Date("Sun Nov 1 2020 09:45:00 GMT-0000 (Greenwich Mean Time)"),
       "America/Los_Angeles", // -8 hours
     );
@@ -109,8 +111,8 @@ describe("utcToZonedTime", function () {
   });
 
   it("works in specific time zones", function () {
-    var timeZone = "America/Vancouver";
-    var result = utcToZonedTime("2020-03-08T19:00:00.000Z", timeZone);
+    const timeZone = "America/Vancouver";
+    const result = utcToZonedTime("2020-03-08T19:00:00.000Z", timeZone);
     assert.equal(
       format(result, "yyyy-MM-dd hh:mm:ss.SSS"),
       "2020-03-08 12:00:00.000",
@@ -128,8 +130,8 @@ describe("utcToZonedTime", function () {
 
   describe("year < 100", () => {
     it("works with string input", () => {
-      var timeZone = "Europe/Berlin";
-      var result = utcToZonedTime("0021-03-08T19:00:00.000Z", timeZone);
+      const timeZone = "Europe/Berlin";
+      const result = utcToZonedTime("0021-03-08T19:00:00.000Z", timeZone);
       /*
        time zone for Europe/Berlin is UTC +0:53:28 for dates before 1800
        see https://www.timeanddate.com/time/zone/germany/berlin?syear=1800
@@ -141,10 +143,10 @@ describe("utcToZonedTime", function () {
     });
 
     it("works with date input", () => {
-      var input = newDateUTC(21, 2, 8, 19, 0, 0, 0);
+      const input = newDateUTC(21, 2, 8, 19, 0, 0, 0);
 
-      var timeZone = "Europe/Berlin";
-      var result = utcToZonedTime(input, timeZone);
+      const timeZone = "Europe/Berlin";
+      const result = utcToZonedTime(input, timeZone);
       /*
        time zone for Europe/Berlin is UTC +0:53:28 for dates before 1800
        see https://www.timeanddate.com/time/zone/germany/berlin?syear=1800
@@ -158,29 +160,32 @@ describe("utcToZonedTime", function () {
 
   describe("invalid date and time zone handling", function () {
     it("returns an invalid date when the date string is invalid without tz info", function () {
-      var result: any = utcToZonedTime(
+      const result: Result = utcToZonedTime(
         "2020-03-08T25:00:00.000",
         "bad/timeZone",
       );
       assert(result instanceof Date);
+      // @ts-expect-error
       assert(isNaN(result));
     });
 
     it("returns an invalid date when the date string is invalid with tz info", function () {
-      var result: any = utcToZonedTime(
+      const result: Result = utcToZonedTime(
         "2020-03-08T25:00:00.000Z",
         "bad/timeZone",
       );
       assert(result instanceof Date);
+      // @ts-expect-error
       assert(isNaN(result));
     });
 
     it("returns an invalid date when the time zone is invalid", function () {
-      var result: any = utcToZonedTime(
+      const result: Result = utcToZonedTime(
         "2020-03-08T19:00:00.000Z",
         "bad/timeZone",
       );
       assert(result instanceof Date);
+      // @ts-expect-error
       assert(isNaN(result));
     });
   });

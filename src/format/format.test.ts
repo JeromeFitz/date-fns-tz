@@ -1,136 +1,78 @@
 /* eslint-env mocha */
 
-import assert, { AssertionError } from "assert";
+import assert, { AssertionError } from "node:assert";
 import { assert as _assert, describe, it, expect, test } from "vitest";
 import { format } from "./index";
+import sinon from "sinon";
 import { enGB } from "date-fns/locale";
 import { utcToZonedTime } from "../utcToZonedTime";
 
-describe("format", function () {
-  var date = new Date(1986, 3 /* Apr */, 4, 10, 32, 55, 123);
+describe("format: date-fns", () => {
+  const date = new Date(1986, 3 /* Apr */, 4, 10, 32, 55, 123);
 
-  var offset = date.getTimezoneOffset();
-  var absoluteOffset = Math.abs(offset);
-  var hours = Math.floor(absoluteOffset / 60);
-  var hoursLeadingZero = hours < 10 ? "0" : "";
-  var minutes = absoluteOffset % 60;
-  var minutesLeadingZero = minutes < 10 ? "0" : "";
-  var sign = offset > 0 ? "-" : "+";
+  const offset = date.getTimezoneOffset();
+  const absoluteOffset = Math.abs(offset);
+  const hours = Math.floor(absoluteOffset / 60);
+  const hoursLeadingZero = hours < 10 ? "0" : "";
+  const minutes = absoluteOffset % 60;
+  const minutesLeadingZero = minutes < 10 ? "0" : "";
+  const sign = offset > 0 ? "-" : "+";
 
-  var timezone =
+  const timezone =
     sign + hoursLeadingZero + hours + ":" + minutesLeadingZero + minutes;
-  var timezoneShort = timezone.replace(":", "");
-  var timezoneWithOptionalMinutesShort =
+  const timezoneShort = timezone.replace(":", "");
+  const timezoneWithOptionalMinutesShort =
     minutes === 0 ? sign + hoursLeadingZero + hours : timezoneShort;
 
-  var timezoneWithZ = offset === 0 ? "Z" : timezone;
-  var timezoneWithZShort = offset === 0 ? "Z" : timezoneShort;
-  var timezoneWithOptionalMinutesAndZShort =
+  const timezoneWithZ = offset === 0 ? "Z" : timezone;
+  const timezoneWithZShort = offset === 0 ? "Z" : timezoneShort;
+  const timezoneWithOptionalMinutesAndZShort =
     offset === 0 ? "Z" : timezoneWithOptionalMinutesShort;
 
-  var timezoneGMTShort =
+  const timezoneGMTShort =
     minutes === 0
       ? "GMT" + sign + hours
       : "GMT" + sign + hours + ":" + minutesLeadingZero + minutes;
-  var timezoneGMT = "GMT" + timezone;
+  const timezoneGMT = "GMT" + timezone;
 
-  // @ts-ignore
-  var timeZoneNameShort = Intl.DateTimeFormat(undefined, {
-    timeZoneName: "short",
-  })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
-  // @ts-ignore
-  var timeZoneName = Intl.DateTimeFormat(undefined, { timeZoneName: "long" })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
+  const timestamp = date.getTime().toString();
+  const secondsTimestamp = Math.floor(date.getTime() / 1000).toString();
 
-  // America/New_York at EST on 4 April 1986
-  var timezoneWithOptionalMinutesAmericaNYShort = "-05";
-  var timezoneAmericaNYShort = "-0500";
-  var timezoneAmericaNY = "-05:00";
-  var timezoneGMTAmericaNYShort = "GMT-5";
-  var timezoneGMTAmericaNY = "GMT-05:00";
-  var dateAndTimeZoneAmericaNY = "1986-04-04 10:32:55 EST";
-
-  // These time zone names may change depending on the system locale where tests are run
-  // @ts-ignore
-  var timezoneNameAmericaNYShort = Intl.DateTimeFormat(undefined, {
-    timeZoneName: "short",
-    timeZone: "America/New_York",
-  })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
-  // @ts-ignore
-  var timezoneNameAmericaNY = Intl.DateTimeFormat(undefined, {
-    timeZoneName: "long",
-    timeZone: "America/New_York",
-  })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
-  // @ts-ignore
-  var timezoneNameEuropeShortEnUs = Intl.DateTimeFormat(undefined, {
-    timeZoneName: "short",
-    timeZone: "Europe/Paris",
-  })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
-  // @ts-ignore
-  var timezoneNameEuropeEnUs = Intl.DateTimeFormat(undefined, {
-    timeZoneName: "long",
-    timeZone: "Europe/Paris",
-  })
-    .format(date)
-    .match(/ [\w-+ ]+$/)[0]
-    .trim();
-
-  // These time zone names will be consistent when a locale is specified
-  var timezoneNameEuropeShortEnGb = "CEST";
-  var timezoneNameEuropeEnGB = "Central European Summer Time";
-
-  var timestamp = date.getTime().toString();
-  var secondsTimestamp = Math.floor(date.getTime() / 1000).toString();
-
-  it("accepts a timestamp", function () {
-    var date = new Date(2014, 3, 4).getTime();
+  it("accepts a timestamp", () => {
+    const date = new Date(2014, 3, 4).getTime();
     assert(format(date, "yyyy-MM-dd") === "2014-04-04");
   });
 
-  it("escapes characters between the single quote characters", function () {
-    var result = format(date, "'yyyy-'MM-dd'THH:mm:ss.SSSX' yyyy-'MM-dd'");
+  it("escapes characters between the single quote characters", () => {
+    const result = format(date, "'yyyy-'MM-dd'THH:mm:ss.SSSX' yyyy-'MM-dd'");
     assert(result === "yyyy-04-04THH:mm:ss.SSSX 1986-MM-dd");
   });
 
-  it('two single quote characters are transformed into a "real" single quote', function () {
-    var date = new Date(2014, 3, 4, 5);
+  it('two single quote characters are transformed into a "real" single quote', () => {
+    const date = new Date(2014, 3, 4, 5);
     assert(format(date, "''h 'o''clock'''") === "'5 o'clock'");
   });
 
-  it("accepts new line charactor", function () {
-    var date = new Date(2014, 3, 4, 5);
-    assert.equal(
+  it("accepts new line charactor", () => {
+    const date = new Date(2014, 3, 4, 5);
+    assert.strictEqual(
       format(date, "yyyy-MM-dd'\n'HH:mm:ss"),
       "2014-04-04\n05:00:00",
     );
   });
 
-  describe("ordinal numbers", function () {
-    it("ordinal day of an ordinal month", function () {
-      var result = format(date, "do 'day of the' Mo 'month of' yyyy");
+  describe("ordinal numbers", () => {
+    it("ordinal day of an ordinal month", () => {
+      const result = format(date, "do 'day of the' Mo 'month of' yyyy");
       assert(result === "4th day of the 4th month of 1986");
     });
 
-    it("should return a correct ordinal number", function () {
-      var result = [];
-      for (var i = 1; i <= 31; i++) {
+    it("should return a correct ordinal number", () => {
+      const result = [];
+      for (let i = 1; i <= 31; i++) {
         result.push(format(new Date(2015, 0, i), "do"));
       }
-      var expected = [
+      const expected = [
         "1st",
         "2nd",
         "3rd",
@@ -163,54 +105,69 @@ describe("format", function () {
         "30th",
         "31st",
       ];
-      assert.deepEqual(result, expected);
+      assert.deepStrictEqual(result, expected);
     });
   });
 
-  it("era", function () {
-    var result = format(date, "G GG GGG GGGG GGGGG");
+  it("era", () => {
+    const result = format(date, "G GG GGG GGGG GGGGG");
     assert(result === "AD AD AD Anno Domini A");
+
+    const bcDate = new Date();
+    bcDate.setFullYear(-1, 0 /* Jan */, 1);
+    const bcResult = format(bcDate, "G GG GGG GGGG GGGGG");
+    assert(bcResult === "BC BC BC Before Christ B");
   });
 
-  describe("year", function () {
-    describe("regular year", function () {
-      it("works as expected", function () {
-        var result = format(date, "y yo yy yyy yyyy yyyyy");
+  describe("year", () => {
+    describe("regular year", () => {
+      it("works as expected", () => {
+        const result = format(date, "y yo yy yyy yyyy yyyyy");
         assert(result === "1986 1986th 86 1986 1986 01986");
       });
 
-      it("1 BC formats as 1", function () {
-        var date = new Date(0, 0 /* Jan */, 1);
-        date.setFullYear(0);
-        var result = format(date, "y");
+      it("1 BC formats as 1", () => {
+        const date = new Date(0);
+        date.setFullYear(0, 0 /* Jan */, 1);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "y");
         assert(result === "1");
       });
 
-      it("2 BC formats as 2", function () {
-        var date = new Date(0, 0 /* Jan */, 1);
-        date.setFullYear(-1);
-        var result = format(date, "y");
+      it("2 BC formats as 2", () => {
+        const date = new Date(0);
+        date.setFullYear(-1, 0 /* Jan */, 1);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "y");
         assert(result === "2");
+      });
+
+      it("2 BC formats as 2nd", () => {
+        const date = new Date();
+        date.setFullYear(-1, 0 /* Jan */, 1);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "yo");
+        assert(result === "2nd");
       });
     });
 
-    describe("local week-numbering year", function () {
-      it("works as expected", function () {
-        var result = format(date, "Y Yo YY YYY YYYY YYYYY", {
+    describe("local week-numbering year", () => {
+      it("works as expected", () => {
+        const result = format(date, "Y Yo YY YYY YYYY YYYYY", {
           useAdditionalWeekYearTokens: true,
         });
         assert(result === "1986 1986th 86 1986 1986 01986");
       });
 
-      it("the first week of the next year", function () {
-        var result = format(new Date(2013, 11 /* Dec */, 29), "YYYY", {
+      it("the first week of the next year", () => {
+        const result = format(new Date(2013, 11 /* Dec */, 29), "YYYY", {
           useAdditionalWeekYearTokens: true,
         });
         assert(result === "2014");
       });
 
-      it("allows to specify `weekStartsOn` and `firstWeekContainsDate` in options", function () {
-        var result = format(new Date(2013, 11 /* Dec */, 29), "YYYY", {
+      it("allows to specify `weekStartsOn` and `firstWeekContainsDate` in options", () => {
+        const result = format(new Date(2013, 11 /* Dec */, 29), "YYYY", {
           weekStartsOn: 1,
           firstWeekContainsDate: 4,
           useAdditionalWeekYearTokens: true,
@@ -218,99 +175,104 @@ describe("format", function () {
         assert(result === "2013");
       });
 
-      it("the first week of year", function () {
-        var result = format(new Date(2016, 0 /* Jan */, 1), "YYYY", {
+      it("the first week of year", () => {
+        const result = format(new Date(2016, 0 /* Jan */, 1), "YYYY", {
           useAdditionalWeekYearTokens: true,
         });
         assert(result === "2016");
       });
 
-      it("1 BC formats as 1", function () {
-        var date = new Date(0, 6 /* Jul */, 2);
-        date.setFullYear(0);
-        var result = format(date, "Y");
+      it("1 BC formats as 1", () => {
+        const date = new Date(0);
+        date.setFullYear(0, 6 /* Jul */, 2);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "Y");
         assert(result === "1");
       });
 
-      it("2 BC formats as 2", function () {
-        var date = new Date(0, 6 /* Jul */, 2);
-        date.setFullYear(-1);
-        var result = format(date, "Y");
+      it("2 BC formats as 2", () => {
+        const date = new Date(0);
+        date.setFullYear(-1, 6 /* Jul */, 2);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "Y");
         assert(result === "2");
       });
     });
 
-    describe("ISO week-numbering year", function () {
-      it("works as expected", function () {
-        var result = format(date, "R RR RRR RRRR RRRRR");
+    describe("ISO week-numbering year", () => {
+      it("works as expected", () => {
+        const result = format(date, "R RR RRR RRRR RRRRR");
         assert(result === "1986 1986 1986 1986 01986");
       });
 
-      it("the first week of the next year", function () {
-        var result = format(new Date(2013, 11 /* Dec */, 30), "RRRR");
+      it("the first week of the next year", () => {
+        const result = format(new Date(2013, 11 /* Dec */, 30), "RRRR");
         assert(result === "2014");
       });
 
-      it("the last week of the previous year", function () {
-        var result = format(new Date(2016, 0 /* Jan */, 1), "RRRR");
+      it("the last week of the previous year", () => {
+        const result = format(new Date(2016, 0 /* Jan */, 1), "RRRR");
         assert(result === "2015");
       });
 
-      it("1 BC formats as 0", function () {
-        var date = new Date(0, 6 /* Jul */, 2);
-        date.setFullYear(0);
-        var result = format(date, "R");
+      it("1 BC formats as 0", () => {
+        const date = new Date(0);
+        date.setFullYear(0, 6 /* Jul */, 2);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "R");
         assert(result === "0");
       });
 
-      it("2 BC formats as -1", function () {
-        var date = new Date(0, 6 /* Jul */, 2);
-        date.setFullYear(-1);
-        var result = format(date, "R");
+      it("2 BC formats as -1", () => {
+        const date = new Date(0);
+        date.setFullYear(-1, 6 /* Jul */, 2);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "R");
         assert(result === "-1");
       });
     });
 
-    describe("extended year", function () {
-      it("works as expected", function () {
-        var result = format(date, "u uu uuu uuuu uuuuu");
+    describe("extended year", () => {
+      it("works as expected", () => {
+        const result = format(date, "u uu uuu uuuu uuuuu");
         assert(result === "1986 1986 1986 1986 01986");
       });
 
-      it("1 BC formats as 0", function () {
-        var date = new Date(0, 0, 1);
-        date.setFullYear(0);
-        var result = format(date, "u");
+      it("1 BC formats as 0", () => {
+        const date = new Date(0);
+        date.setFullYear(0, 0, 1);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "u");
         assert(result === "0");
       });
 
-      it("2 BC formats as -1", function () {
-        var date = new Date(0, 0, 1);
-        date.setFullYear(-1);
-        var result = format(date, "u");
+      it("2 BC formats as -1", () => {
+        const date = new Date(0);
+        date.setFullYear(-1, 0, 1);
+        date.setHours(0, 0, 0, 0);
+        const result = format(date, "u");
         assert(result === "-1");
       });
     });
   });
 
-  describe("quarter", function () {
-    it("formatting quarter", function () {
-      var result = format(date, "Q Qo QQ QQQ QQQQ QQQQQ");
+  describe("quarter", () => {
+    it("formatting quarter", () => {
+      const result = format(date, "Q Qo QQ QQQ QQQQ QQQQQ");
       assert(result === "2 2nd 02 Q2 2nd quarter 2");
     });
 
-    it("stand-alone quarter", function () {
-      var result = format(date, "q qo qq qqq qqqq qqqqq");
+    it("stand-alone quarter", () => {
+      const result = format(date, "q qo qq qqq qqqq qqqqq");
       assert(result === "2 2nd 02 Q2 2nd quarter 2");
     });
 
-    it("returns a correct quarter for each month", function () {
-      var result = [];
-      for (var i = 0; i <= 11; i++) {
-        // @ts-ignore
+    it("returns a correct quarter for each month", () => {
+      const result = [];
+      for (let i = 0; i <= 11; i++) {
         result.push(format(new Date(1986, i, 1), "Q"));
       }
-      var expected = [
+      const expected = [
         "1",
         "1",
         "1",
@@ -324,33 +286,33 @@ describe("format", function () {
         "4",
         "4",
       ];
-      assert.deepEqual(result, expected);
+      assert.deepStrictEqual(result, expected);
     });
   });
 
-  describe("month", function () {
-    it("formatting month", function () {
-      var result = format(date, "M Mo MM MMM MMMM MMMMM");
+  describe("month", () => {
+    it("formatting month", () => {
+      const result = format(date, "M Mo MM MMM MMMM MMMMM");
       assert(result === "4 4th 04 Apr April A");
     });
 
-    it("stand-alone month", function () {
-      var result = format(date, "L Lo LL LLL LLLL LLLLL");
+    it("stand-alone month", () => {
+      const result = format(date, "L Lo LL LLL LLLL LLLLL");
       assert(result === "4 4th 04 Apr April A");
     });
   });
 
-  describe("week", function () {
-    describe("local week of year", function () {
-      it("works as expected", function () {
-        var date = new Date(1986, 3 /* Apr */, 6);
-        var result = format(date, "w wo ww");
+  describe("week", () => {
+    describe("local week of year", () => {
+      it("works as expected", () => {
+        const date = new Date(1986, 3 /* Apr */, 6);
+        const result = format(date, "w wo ww");
         assert(result === "15 15th 15");
       });
 
-      it("allows to specify `weekStartsOn` and `firstWeekContainsDate` in options", function () {
-        var date = new Date(1986, 3 /* Apr */, 6);
-        var result = format(date, "w wo ww", {
+      it("allows to specify `weekStartsOn` and `firstWeekContainsDate` in options", () => {
+        const date = new Date(1986, 3 /* Apr */, 6);
+        const result = format(date, "w wo ww", {
           weekStartsOn: 1,
           firstWeekContainsDate: 4,
         });
@@ -358,193 +320,192 @@ describe("format", function () {
       });
     });
 
-    it("ISO week of year", function () {
-      var date = new Date(1986, 3 /* Apr */, 6);
-      var result = format(date, "I Io II");
+    it("ISO week of year", () => {
+      const date = new Date(1986, 3 /* Apr */, 6);
+      const result = format(date, "I Io II");
       assert(result === "14 14th 14");
     });
   });
 
-  describe("day", function () {
-    it("date", function () {
-      var result = format(date, "d do dd");
+  describe("day", () => {
+    it("date", () => {
+      const result = format(date, "d do dd");
       assert(result === "4 4th 04");
     });
 
-    describe("day of year", function () {
-      it("works as expected", function () {
-        var result = format(date, "D Do DD DDD DDDDD", {
+    describe("day of year", () => {
+      it("works as expected", () => {
+        const result = format(date, "D Do DD DDD DDDDD", {
           useAdditionalDayOfYearTokens: true,
         });
         assert(result === "94 94th 94 094 00094");
       });
 
-      it("returns a correct day number for the last day of a leap year", function () {
-        var result = format(
+      it("returns a correct day number for the last day of a leap year", () => {
+        const result = format(
           new Date(1992, 11 /* Dec */, 31, 23, 59, 59, 999),
           "D",
-          {
-            useAdditionalDayOfYearTokens: true,
-          },
+          { useAdditionalDayOfYearTokens: true },
         );
         assert(result === "366");
       });
     });
   });
 
-  describe("week day", function () {
-    describe("day of week", function () {
-      it("works as expected", function () {
-        var result = format(date, "E EE EEE EEEE EEEEE EEEEEE");
+  describe("week day", () => {
+    describe("day of week", () => {
+      it("works as expected", () => {
+        const result = format(date, "E EE EEE EEEE EEEEE EEEEEE");
         assert(result === "Fri Fri Fri Friday F Fr");
       });
     });
 
-    describe("ISO day of week", function () {
-      it("works as expected", function () {
-        var result = format(date, "i io ii iii iiii iiiii iiiiii");
+    describe("ISO day of week", () => {
+      it("works as expected", () => {
+        const result = format(date, "i io ii iii iiii iiiii iiiiii");
         assert(result === "5 5th 05 Fri Friday F Fr");
       });
 
-      it("returns a correct day of an ISO week", function () {
-        var result = [];
-        for (var i = 1; i <= 7; i++) {
-          // @ts-ignore
+      it("returns a correct day of an ISO week", () => {
+        const result = [];
+        for (let i = 1; i <= 7; i++) {
           result.push(format(new Date(1986, 8 /* Sep */, i), "i"));
         }
-        var expected = ["1", "2", "3", "4", "5", "6", "7"];
-        assert.deepEqual(result, expected);
+        const expected = ["1", "2", "3", "4", "5", "6", "7"];
+        assert.deepStrictEqual(result, expected);
       });
     });
 
-    describe("formatting day of week", function () {
-      it("works as expected", function () {
-        var result = format(date, "e eo ee eee eeee eeeee eeeeee");
+    describe("formatting day of week", () => {
+      it("works as expected", () => {
+        const result = format(date, "e eo ee eee eeee eeeee eeeeee");
         assert(result === "6 6th 06 Fri Friday F Fr");
       });
 
-      it("by default, 1 is Sunday, 2 is Monday, ...", function () {
-        var result = [];
-        for (var i = 7; i <= 13; i++) {
-          // @ts-ignore
+      it("by default, 1 is Sunday, 2 is Monday, ...", () => {
+        const result = [];
+        for (let i = 7; i <= 13; i++) {
           result.push(format(new Date(1986, 8 /* Sep */, i), "e"));
         }
-        var expected = ["1", "2", "3", "4", "5", "6", "7"];
-        assert.deepEqual(result, expected);
+        const expected = ["1", "2", "3", "4", "5", "6", "7"];
+        assert.deepStrictEqual(result, expected);
       });
 
-      it("allows to specify which day is the first day of the week", function () {
-        var result = [];
-        for (var i = 1; i <= 7; i++) {
+      it("allows to specify which day is the first day of the week", () => {
+        const result = [];
+        for (let i = 1; i <= 7; i++) {
           result.push(
-            // @ts-ignore
             format(new Date(1986, 8 /* Sep */, i), "e", { weekStartsOn: 1 }),
           );
         }
-        var expected = ["1", "2", "3", "4", "5", "6", "7"];
-        assert.deepEqual(result, expected);
+        const expected = ["1", "2", "3", "4", "5", "6", "7"];
+        assert.deepStrictEqual(result, expected);
       });
     });
 
-    describe("stand-alone day of week", function () {
-      it("works as expected", function () {
-        var result = format(date, "c co cc ccc cccc ccccc cccccc");
+    describe("stand-alone day of week", () => {
+      it("works as expected", () => {
+        const result = format(date, "c co cc ccc cccc ccccc cccccc");
         assert(result === "6 6th 06 Fri Friday F Fr");
       });
 
-      it("by default, 1 is Sunday, 2 is Monday, ...", function () {
-        var result = [];
-        for (var i = 7; i <= 13; i++) {
-          // @ts-ignore
+      it("by default, 1 is Sunday, 2 is Monday, ...", () => {
+        const result = [];
+        for (let i = 7; i <= 13; i++) {
           result.push(format(new Date(1986, 8 /* Sep */, i), "c"));
         }
-        var expected = ["1", "2", "3", "4", "5", "6", "7"];
-        assert.deepEqual(result, expected);
+        const expected = ["1", "2", "3", "4", "5", "6", "7"];
+        assert.deepStrictEqual(result, expected);
       });
 
-      it("allows to specify which day is the first day of the week", function () {
-        var result = [];
-        for (var i = 1; i <= 7; i++) {
+      it("allows to specify which day is the first day of the week", () => {
+        const result = [];
+        for (let i = 1; i <= 7; i++) {
           result.push(
-            // @ts-ignore
             format(new Date(1986, 8 /* Sep */, i), "c", { weekStartsOn: 1 }),
           );
         }
-        var expected = ["1", "2", "3", "4", "5", "6", "7"];
-        assert.deepEqual(result, expected);
+        const expected = ["1", "2", "3", "4", "5", "6", "7"];
+        assert.deepStrictEqual(result, expected);
       });
     });
   });
 
-  describe("day period and hour", function () {
-    it("hour [1-12]", function () {
-      var result = format(
+  describe("day period and hour", () => {
+    it("hour [1-12]", () => {
+      const result = format(
         new Date(2018, 0 /* Jan */, 1, 0, 0, 0, 0),
         "h ho hh",
       );
       assert(result === "12 12th 12");
     });
 
-    it("hour [0-23]", function () {
-      var result = format(
+    it("hour [0-23]", () => {
+      const result = format(
         new Date(2018, 0 /* Jan */, 1, 0, 0, 0, 0),
         "H Ho HH",
       );
       assert(result === "0 0th 00");
     });
 
-    it("hour [0-11]", function () {
-      var result = format(
+    it("hour [0-11]", () => {
+      const result = format(
         new Date(2018, 0 /* Jan */, 1, 0, 0, 0, 0),
         "K Ko KK",
       );
       assert(result === "0 0th 00");
     });
 
-    it("hour [1-24]", function () {
-      var result = format(
+    it("hour [1-24]", () => {
+      const result = format(
         new Date(2018, 0 /* Jan */, 1, 0, 0, 0, 0),
         "k ko kk",
       );
       assert(result === "24 24th 24");
     });
 
-    describe("AM, PM", function () {
-      it("works as expected", function () {
-        var result = format(
+    describe("AM, PM", () => {
+      it("works as expected", () => {
+        const result = format(
           new Date(2018, 0 /* Jan */, 1, 0, 0, 0, 0),
           "a aa aaa aaaa aaaaa",
         );
         assert(result === "AM AM am a.m. a");
       });
 
-      it("12 PM", function () {
-        var date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
+      it("12 PM", () => {
+        const date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
         assert(format(date, "h H K k a") === "12 12 0 12 PM");
       });
 
-      it("12 AM", function () {
-        var date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
+      it("12 AM", () => {
+        const date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
         assert(format(date, "h H K k a") === "12 0 0 24 AM");
       });
     });
 
-    describe("AM, PM, noon, midnight", function () {
-      it("works as expected", function () {
-        var result = format(
+    describe("AM, PM, noon, midnight", () => {
+      it("works as expected", () => {
+        const result = format(
           new Date(1986, 3 /* Apr */, 6, 2, 0, 0, 900),
           "b bb bbb bbbb bbbbb",
         );
         assert(result === "AM AM am a.m. a");
+
+        const pmResult = format(
+          new Date(1986, 3 /* Apr */, 6, 13, 0, 0, 900),
+          "b bb bbb bbbb bbbbb",
+        );
+        assert(pmResult === "PM PM pm p.m. p");
       });
 
-      it("12 PM", function () {
-        var date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
+      it("12 PM", () => {
+        const date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
         assert(format(date, "b bb bbb bbbb bbbbb") === "noon noon noon noon n");
       });
 
-      it("12 AM", function () {
-        var date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
+      it("12 AM", () => {
+        const date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
         assert(
           format(date, "b bb bbb bbbb bbbbb") ===
             "midnight midnight midnight midnight mi",
@@ -552,58 +513,421 @@ describe("format", function () {
       });
     });
 
-    describe("flexible day periods", function () {
-      it("works as expected", function () {
-        var result = format(date, "B, BB, BBB, BBBB, BBBBB");
+    describe("flexible day periods", () => {
+      it("works as expected", () => {
+        const result = format(date, "B, BB, BBB, BBBB, BBBBB");
         assert(
           result ===
             "in the morning, in the morning, in the morning, in the morning, in the morning",
         );
       });
 
-      it("12 PM", function () {
-        var date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
+      it("12 PM", () => {
+        const date = new Date(1986, 3 /* Apr */, 4, 12, 0, 0, 900);
         assert(format(date, "h B") === "12 in the afternoon");
       });
 
-      it("5 PM", function () {
-        var date = new Date(1986, 3 /* Apr */, 6, 17, 0, 0, 900);
+      it("5 PM", () => {
+        const date = new Date(1986, 3 /* Apr */, 6, 17, 0, 0, 900);
         assert(format(date, "h B") === "5 in the evening");
       });
 
-      it("12 AM", function () {
-        var date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
+      it("12 AM", () => {
+        const date = new Date(1986, 3 /* Apr */, 6, 0, 0, 0, 900);
         assert(format(date, "h B") === "12 at night");
       });
 
-      it("4 AM", function () {
-        var date = new Date(1986, 3 /* Apr */, 6, 4, 0, 0, 900);
+      it("4 AM", () => {
+        const date = new Date(1986, 3 /* Apr */, 6, 4, 0, 0, 900);
         assert(format(date, "h B") === "4 in the morning");
       });
     });
   });
 
-  it("minute", function () {
-    var result = format(date, "m mo mm");
+  it("minute", () => {
+    const result = format(date, "m mo mm");
     assert(result === "32 32nd 32");
   });
 
-  describe("second", function () {
-    it("second", function () {
-      var result = format(date, "s so ss");
+  describe("second", () => {
+    it("second", () => {
+      const result = format(date, "s so ss");
       assert(result === "55 55th 55");
     });
 
-    it("fractional seconds", function () {
-      var result = format(date, "S SS SSS SSSS");
+    it("fractional seconds", () => {
+      const result = format(date, "S SS SSS SSSS");
       assert(result === "1 12 123 1230");
     });
   });
 
+  describe("time zone", () => {
+    it("ISO-8601 with Z", () => {
+      const result = format(date, "X XX XXX XXXX XXXXX");
+      const expectedResult = [
+        timezoneWithOptionalMinutesAndZShort,
+        timezoneWithZShort,
+        timezoneWithZ,
+        timezoneWithZShort,
+        timezoneWithZ,
+      ].join(" ");
+      assert(result === expectedResult);
+
+      const getTimezoneOffsetStub = sinon.stub(
+        Date.prototype,
+        "getTimezoneOffset",
+      );
+      getTimezoneOffsetStub.returns(0);
+      const resultZeroOffset = format(date, "X XX XXX XXXX XXXXX");
+      assert(resultZeroOffset === "Z Z Z Z Z");
+
+      getTimezoneOffsetStub.returns(480);
+      const resultNegativeOffset = format(date, "X XX XXX XXXX XXXXX");
+      assert(resultNegativeOffset === "-08 -0800 -08:00 -0800 -08:00");
+
+      getTimezoneOffsetStub.returns(450);
+      const resultNegative30Offset = format(date, "X XX XXX XXXX XXXXX");
+      assert(resultNegative30Offset === "-0730 -0730 -07:30 -0730 -07:30");
+
+      getTimezoneOffsetStub.restore();
+    });
+
+    it("ISO-8601 without Z", () => {
+      const result = format(date, "x xx xxx xxxx xxxxx");
+      const expectedResult = [
+        timezoneWithOptionalMinutesShort,
+        timezoneShort,
+        timezone,
+        timezoneShort,
+        timezone,
+      ].join(" ");
+      assert(result === expectedResult);
+    });
+
+    it("GMT", () => {
+      const result = format(date, "O OO OOO OOOO");
+      const expectedResult = [
+        timezoneGMTShort,
+        timezoneGMTShort,
+        timezoneGMTShort,
+        timezoneGMT,
+      ].join(" ");
+      assert(result === expectedResult);
+
+      const getTimezoneOffsetStub = sinon.stub(
+        Date.prototype,
+        "getTimezoneOffset",
+      );
+      getTimezoneOffsetStub.returns(480);
+      const resultNegativeOffset = format(date, "O OO OOO OOOO");
+      assert(resultNegativeOffset === "GMT-8 GMT-8 GMT-8 GMT-08:00");
+
+      getTimezoneOffsetStub.returns(450);
+      const resultNegative30Offset = format(date, "O OO OOO OOOO");
+      assert(resultNegative30Offset === "GMT-7:30 GMT-7:30 GMT-7:30 GMT-07:30");
+
+      getTimezoneOffsetStub.restore();
+    });
+
+    it("Specific non-location (date-fns)", () => {
+      const result = format(date, "z zz zzz zzzz");
+      const expectedResult = [
+        timezoneGMTShort,
+        timezoneGMTShort,
+        timezoneGMTShort,
+        timezoneGMT,
+      ].join(" ");
+      /**
+       * @note this _should_ not return the same result date-fns
+       * expects since it is dealing with timezone (i think)
+       */
+      assert(result !== expectedResult);
+    });
+  });
+
+  describe("timestamp", () => {
+    it("seconds timestamp", () => {
+      const result = format(date, "t");
+      assert(result === secondsTimestamp);
+    });
+
+    it("milliseconds timestamp", () => {
+      const result = format(date, "T");
+      assert(result === timestamp);
+    });
+  });
+
+  describe("long format", () => {
+    it("short date", () => {
+      const result = format(date, "P");
+      assert(result === "04/04/1986");
+    });
+
+    it("medium date", () => {
+      const result = format(date, "PP");
+      assert(result === "Apr 4, 1986");
+    });
+
+    it("long date", () => {
+      const result = format(date, "PPP");
+      assert(result === "April 4th, 1986");
+    });
+
+    it("full date", () => {
+      const result = format(date, "PPPP");
+      assert(result === "Friday, April 4th, 1986");
+    });
+
+    it("short time", () => {
+      const result = format(date, "p");
+      assert(result === "10:32 AM");
+    });
+
+    it("medium time", () => {
+      const result = format(date, "pp");
+      assert(result === "10:32:55 AM");
+    });
+
+    it("long time", () => {
+      const result = format(date, "ppp");
+      assert(result === "10:32:55 AM " + timezoneGMTShort);
+    });
+
+    it("full time", () => {
+      const result = format(date, "pppp");
+      assert(result === "10:32:55 AM " + timezoneGMT);
+    });
+
+    it("short date + time", () => {
+      const result = format(date, "Pp");
+      assert(result === "04/04/1986, 10:32 AM");
+    });
+
+    it("medium date + time", () => {
+      const result = format(date, "PPpp");
+      assert(result === "Apr 4, 1986, 10:32:55 AM");
+    });
+
+    it("long date + time", () => {
+      const result = format(date, "PPPppp");
+      assert(result === "April 4th, 1986 at 10:32:55 AM " + timezoneGMTShort);
+    });
+
+    it("full date + time", () => {
+      const result = format(date, "PPPPpppp");
+      assert(
+        result === "Friday, April 4th, 1986 at 10:32:55 AM " + timezoneGMT,
+      );
+    });
+
+    it("allows arbitrary combination of date and time", () => {
+      const result = format(date, "Ppppp");
+      assert(result === "04/04/1986, 10:32:55 AM " + timezoneGMT);
+    });
+  });
+
+  describe("edge cases", () => {
+    it("throws RangeError if the time value is invalid", () => {
+      assert.throws(
+        format.bind(null, new Date(NaN), "MMMM d, yyyy"),
+        RangeError,
+      );
+    });
+
+    it("handles dates before 100 AD", () => {
+      const initialDate = new Date(0);
+      initialDate.setFullYear(7, 11 /* Dec */, 31);
+      initialDate.setHours(0, 0, 0, 0);
+      assert(format(initialDate, "Y ww i") === "8 01 1");
+    });
+  });
+
+  describe("custom locale", () => {
+    it("allows to pass a custom locale", () => {
+      const customLocale = {
+        localize: {
+          month: () => {
+            return "works";
+          },
+        },
+        formatLong: {
+          date: () => {
+            return "'It' MMMM!";
+          },
+        },
+      };
+      const result = format(date, "PPPP", {
+        // @ts-expect-error - It's ok to have incomplete locale
+        locale: customLocale,
+      });
+      assert(result === "It works!");
+    });
+  });
+
+  it("throws RangeError exception if the format string contains an unescaped latin alphabet character", () => {
+    assert.throws(format.bind(null, date, "yyyy-MM-dd-nnnn"), RangeError);
+  });
+
+  describe("useAdditionalWeekYearTokens and useAdditionalDayOfYearTokens options", () => {
+    it("throws an error if D token is used", () => {
+      try {
+        format.bind(null, date, "yyyy-MM-D");
+      } catch (e) {
+        assert(e instanceof RangeError);
+        assert(e.message.startsWith("Use `d` instead of `D`"));
+      }
+    });
+
+    it("allows D token if useAdditionalDayOfYearTokens is set to true", () => {
+      const result = format(date, "yyyy-MM-D", {
+        useAdditionalDayOfYearTokens: true,
+      });
+      assert.deepStrictEqual(result, "1986-04-94");
+    });
+
+    it("throws an error if DD token is used", () => {
+      try {
+        format.bind(null, date, "yyyy-MM-DD");
+      } catch (e) {
+        assert(e instanceof RangeError);
+        assert(e.message.startsWith("Use `dd` instead of `DD`"));
+      }
+    });
+
+    it("allows DD token if useAdditionalDayOfYearTokens is set to true", () => {
+      const result = format(date, "yyyy-MM-DD", {
+        useAdditionalDayOfYearTokens: true,
+      });
+      assert.deepStrictEqual(result, "1986-04-94");
+    });
+
+    it("throws an error if YY token is used", () => {
+      try {
+        format.bind(null, date, "YY-MM-dd");
+      } catch (e) {
+        assert(e instanceof RangeError);
+        assert(e.message.startsWith("Use `yy` instead of `YY`"));
+      }
+    });
+
+    it("allows YY token if useAdditionalWeekYearTokens is set to true", () => {
+      const result = format(date, "YY-MM-dd", {
+        useAdditionalWeekYearTokens: true,
+      });
+      assert.deepStrictEqual(result, "86-04-04");
+    });
+
+    it("throws an error if YYYY token is used", () => {
+      try {
+        format.bind(null, date, "YYYY-MM-dd");
+      } catch (e) {
+        assert(e instanceof RangeError);
+        assert(e.message.startsWith("Use `yyyy` instead of `YYYY`"));
+      }
+    });
+
+    it("allows YYYY token if useAdditionalWeekYearTokens is set to true", () => {
+      const result = format(date, "YYYY-MM-dd", {
+        useAdditionalWeekYearTokens: true,
+      });
+      assert.deepStrictEqual(result, "1986-04-04");
+    });
+  });
+});
+
+describe("format: date-fns-tz", () => {
+  /**
+   * date-fns
+   */
+  const date = new Date(1986, 3 /* Apr */, 4, 10, 32, 55, 123);
+
+  const offset = date.getTimezoneOffset();
+  const absoluteOffset = Math.abs(offset);
+  const hours = Math.floor(absoluteOffset / 60);
+  const hoursLeadingZero = hours < 10 ? "0" : "";
+  const minutes = absoluteOffset % 60;
+  const minutesLeadingZero = minutes < 10 ? "0" : "";
+  const sign = offset > 0 ? "-" : "+";
+
+  const timezone =
+    sign + hoursLeadingZero + hours + ":" + minutesLeadingZero + minutes;
+  const timezoneShort = timezone.replace(":", "");
+  const timezoneWithOptionalMinutesShort =
+    minutes === 0 ? sign + hoursLeadingZero + hours : timezoneShort;
+
+  const timezoneWithZ = offset === 0 ? "Z" : timezone;
+  const timezoneWithZShort = offset === 0 ? "Z" : timezoneShort;
+  const timezoneWithOptionalMinutesAndZShort =
+    offset === 0 ? "Z" : timezoneWithOptionalMinutesShort;
+
+  const timezoneGMTShort =
+    minutes === 0
+      ? "GMT" + sign + hours
+      : "GMT" + sign + hours + ":" + minutesLeadingZero + minutes;
+  const timezoneGMT = "GMT" + timezone;
+
+  const timestamp = date.getTime().toString();
+  const secondsTimestamp = Math.floor(date.getTime() / 1000).toString();
+  /**
+   * date-fns-tz
+   */
+  const timeZoneNameShort = Intl.DateTimeFormat(undefined, {
+    timeZoneName: "short",
+  })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+  const timeZoneName = Intl.DateTimeFormat(undefined, { timeZoneName: "long" })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+
+  // America/New_York at EST on 4 April 1986
+  const timezoneWithOptionalMinutesAmericaNYShort = "-05";
+  const timezoneAmericaNYShort = "-0500";
+  const timezoneAmericaNY = "-05:00";
+  const timezoneGMTAmericaNYShort = "GMT-5";
+  const timezoneGMTAmericaNY = "GMT-05:00";
+  const dateAndTimeZoneAmericaNY = "1986-04-04 10:32:55 EST";
+
+  // These time zone names may change depending on the system locale where tests are run
+  const timezoneNameAmericaNYShort = Intl.DateTimeFormat(undefined, {
+    timeZoneName: "short",
+    timeZone: "America/New_York",
+  })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+  const timezoneNameAmericaNY = Intl.DateTimeFormat(undefined, {
+    timeZoneName: "long",
+    timeZone: "America/New_York",
+  })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+  const timezoneNameEuropeShortEnUs = Intl.DateTimeFormat(undefined, {
+    timeZoneName: "short",
+    timeZone: "Europe/Paris",
+  })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+  const timezoneNameEuropeEnUs = Intl.DateTimeFormat(undefined, {
+    timeZoneName: "long",
+    timeZone: "Europe/Paris",
+  })
+    .format(date)
+    .match(/ [\w-+ ]+$/)[0]
+    .trim();
+
+  // These time zone names will be consistent when a locale is specified
+  const timezoneNameEuropeShortEnGb = "CEST";
+  const timezoneNameEuropeEnGB = "Central European Summer Time";
+
   describe("time zone", function () {
     it("ISO-8601 with Z", function () {
-      var result = format(date, "X XX XXX XXXX XXXXX");
-      var expectedResult = [
+      const result = format(date, "X XX XXX XXXX XXXXX");
+      const expectedResult = [
         timezoneWithOptionalMinutesAndZShort,
         timezoneWithZShort,
         timezoneWithZ,
@@ -614,8 +938,8 @@ describe("format", function () {
     });
 
     it("ISO-8601 without Z", function () {
-      var result = format(date, "x xx xxx xxxx xxxxx");
-      var expectedResult = [
+      const result = format(date, "x xx xxx xxxx xxxxx");
+      const expectedResult = [
         timezoneWithOptionalMinutesShort,
         timezoneShort,
         timezone,
@@ -626,8 +950,8 @@ describe("format", function () {
     });
 
     it("GMT", function () {
-      var result = format(date, "O OO OOO OOOO");
-      var expectedResult = [
+      const result = format(date, "O OO OOO OOOO");
+      const expectedResult = [
         timezoneGMTShort,
         timezoneGMTShort,
         timezoneGMTShort,
@@ -637,8 +961,8 @@ describe("format", function () {
     });
 
     it("Specific non-location", function () {
-      var result = format(date, "z zz zzz zzzz");
-      var expectedResult = [
+      const result = format(date, "z zz zzz zzzz");
+      const expectedResult = [
         timeZoneNameShort,
         timeZoneNameShort,
         timeZoneNameShort,
@@ -648,10 +972,10 @@ describe("format", function () {
     });
 
     it("ISO-8601 with Z, with timeZone option", function () {
-      var result = format(date, "X XX XXX XXXX XXXXX", {
+      const result = format(date, "X XX XXX XXXX XXXXX", {
         timeZone: "America/New_York",
       });
-      var expectedResult = [
+      const expectedResult = [
         timezoneWithOptionalMinutesAmericaNYShort,
         timezoneAmericaNYShort,
         timezoneAmericaNY,
@@ -662,10 +986,10 @@ describe("format", function () {
     });
 
     it("ISO-8601 without Z, with timeZone option", function () {
-      var result = format(date, "x xx xxx xxxx xxxxx", {
+      const result = format(date, "x xx xxx xxxx xxxxx", {
         timeZone: "America/New_York",
       });
-      var expectedResult = [
+      const expectedResult = [
         timezoneWithOptionalMinutesAmericaNYShort,
         timezoneAmericaNYShort,
         timezoneAmericaNY,
@@ -676,10 +1000,10 @@ describe("format", function () {
     });
 
     it("GMT, with timeZone option", function () {
-      var result = format(date, "O OO OOO OOOO", {
+      const result = format(date, "O OO OOO OOOO", {
         timeZone: "America/New_York",
       });
-      var expectedResult = [
+      const expectedResult = [
         timezoneGMTAmericaNYShort,
         timezoneGMTAmericaNYShort,
         timezoneGMTAmericaNYShort,
@@ -689,10 +1013,10 @@ describe("format", function () {
     });
 
     it("Specific non-location, with timeZone option", function () {
-      var result1 = format(date, "z zz zzz zzzz", {
+      const result1 = format(date, "z zz zzz zzzz", {
         timeZone: "America/New_York",
       });
-      var expectedResult1 = [
+      const expectedResult1 = [
         timezoneNameAmericaNYShort,
         timezoneNameAmericaNYShort,
         timezoneNameAmericaNYShort,
@@ -700,8 +1024,10 @@ describe("format", function () {
       ].join(" ");
       assert(result1 === expectedResult1);
 
-      var result2 = format(date, "z zz zzz zzzz", { timeZone: "Europe/Paris" });
-      var expectedResult2 = [
+      const result2 = format(date, "z zz zzz zzzz", {
+        timeZone: "Europe/Paris",
+      });
+      const expectedResult2 = [
         timezoneNameEuropeShortEnUs,
         timezoneNameEuropeShortEnUs,
         timezoneNameEuropeShortEnUs,
@@ -712,11 +1038,11 @@ describe("format", function () {
 
     it("Specific non-location, with timeZone option and specified locale", function () {
       enGB.code = "en-GB";
-      var result = format(date, "z zz zzz zzzz", {
+      const result = format(date, "z zz zzz zzzz", {
         timeZone: "Europe/Paris",
         locale: enGB,
       });
-      var expectedResult = [
+      const expectedResult = [
         timezoneNameEuropeShortEnGb,
         timezoneNameEuropeShortEnGb,
         timezoneNameEuropeShortEnGb,
@@ -727,16 +1053,16 @@ describe("format", function () {
 
     // Behaviour differs between chrome 83 linux and chrome 85 macos
     it("Local date with specific non-location time zone", function () {
-      var result = format(date, "yyyy-MM-dd HH:mm:ss zzz", {
+      const result = format(date, "yyyy-MM-dd HH:mm:ss zzz", {
         timeZone: "America/New_York",
       });
       assert(result === dateAndTimeZoneAmericaNY);
     });
 
     it("handles quoted text next to a time zone token", function () {
-      var date = "1986-04-04T10:32:55.123Z";
-      var timeZone = "Europe/Paris";
-      var result = format(
+      const date = "1986-04-04T10:32:55.123Z";
+      const timeZone = "Europe/Paris";
+      const result = format(
         utcToZonedTime(date, timeZone),
         "dd.MM.yyyy HH:mm 'UTC'xxx",
         { timeZone },
@@ -770,95 +1096,19 @@ describe("format", function () {
 
   describe("timestamp", function () {
     it("seconds timestamp", function () {
-      var result = format(date, "t");
+      const result = format(date, "t");
       assert(result === secondsTimestamp);
     });
 
     it("milliseconds timestamp", function () {
-      var result = format(date, "T");
+      const result = format(date, "T");
       assert(result === timestamp);
     });
   });
 
-  describe("long format", function () {
-    it("short date", function () {
-      var result = format(date, "P");
-      assert(result === "04/04/1986");
-    });
-
-    it("medium date", function () {
-      var result = format(date, "PP");
-      assert(result === "Apr 4, 1986");
-    });
-
-    it("long date", function () {
-      var result = format(date, "PPP");
-      assert(result === "April 4th, 1986");
-    });
-
-    it("full date", function () {
-      var result = format(date, "PPPP");
-      assert(result === "Friday, April 4th, 1986");
-    });
-
-    it("short time", function () {
-      var result = format(date, "p");
-      assert(result === "10:32 AM");
-    });
-
-    it("medium time", function () {
-      var result = format(date, "pp");
-      assert(result === "10:32:55 AM");
-    });
-
-    it("long time", function () {
-      var result = format(date, "ppp");
-      assert(result === "10:32:55 AM " + timezoneGMTShort);
-    });
-
-    it("full time", function () {
-      var result = format(date, "pppp");
-      assert(result === "10:32:55 AM " + timezoneGMT);
-    });
-
-    it("short date + time", function () {
-      var result = format(date, "Pp");
-      assert(result === "04/04/1986, 10:32 AM");
-    });
-
-    it("medium date + time", function () {
-      var result = format(date, "PPpp");
-      assert(result === "Apr 4, 1986, 10:32:55 AM");
-    });
-
-    it("long date + time", function () {
-      var result = format(date, "PPPppp");
-      assert(result === "April 4th, 1986 at 10:32:55 AM " + timezoneGMTShort);
-    });
-
-    it("full date + time", function () {
-      var result = format(date, "PPPPpppp");
-      assert(
-        result === "Friday, April 4th, 1986 at 10:32:55 AM " + timezoneGMT,
-      );
-    });
-
-    it("allows arbitrary combination of date and time", function () {
-      var result = format(date, "Ppppp");
-      assert(result === "04/04/1986, 10:32:55 AM " + timezoneGMT);
-    });
-  });
-
   describe("edge cases", function () {
-    it("throws RangeError if the time value is invalid", () => {
-      assert.throws(
-        format.bind(null, new Date(NaN), "MMMM d, yyyy"),
-        RangeError,
-      );
-    });
-
     it("throws RangeError if the time zone is invalid and a name included in the output", () => {
-      var result = format(new Date(2021, 11, 20), "MMMM d, yyyy", {
+      const result = format(new Date(2021, 11, 20), "MMMM d, yyyy", {
         timeZone: "bad/timeZone",
       });
       assert.equal(result, "December 20, 2021");
@@ -870,7 +1120,7 @@ describe("format", function () {
     });
 
     it("throws RangeError if the time zone is invalid and an offset included in the output", () => {
-      var result = format(new Date(2021, 11, 20), "xxxxx", {
+      const result = format(new Date(2021, 11, 20), "xxxxx", {
         timeZone: "Europe/London",
       });
       assert.equal(result, "+00:00");
@@ -879,155 +1129,67 @@ describe("format", function () {
         /RangeError: Invalid time zone specified: X\/Y$/,
       );
     });
-
-    it("handles dates before 100 AD", function () {
-      var initialDate = new Date(0);
-      initialDate.setFullYear(7, 11 /* Dec */, 31);
-      initialDate.setHours(0, 0, 0, 0);
-      assert(format(initialDate, "Y ww i") === "8 01 1");
-    });
   });
 
   it("implicitly converts `formatString`", function () {
-    var formatString: any = new String("yyyy-MM-dd");
+    const formatString: any = new String("yyyy-MM-dd");
 
-    var date = new Date(2014, 3, 4);
+    const date = new Date(2014, 3, 4);
 
-    // @ts-ignore
     assert(format(date, formatString) === "2014-04-04");
   });
 
-  describe("custom locale", function () {
-    it("allows to pass a custom locale", function () {
-      var customLocale = {
-        localize: {
-          month: function () {
-            return "works";
-          },
-        },
-        formatLong: {
-          date: function () {
-            return "'It' MMMM!";
-          },
-        },
-      };
-      var result = format(date, "PPPP", { locale: customLocale });
-      assert(result === "It works!");
-    });
+  // it("throws `RangeError` if `options.locale` doesn't have `formatLong` property", function () {
+  //   const customLocale = {
+  //     formatLong: {},
+  //   };
+  //   const block = format.bind(null, date, "yyyy-MM-dd", {
+  //     locale: customLocale,
+  //   });
+  //   assert.throws(block, RangeError);
+  // });
 
-    // it("throws `RangeError` if `options.locale` doesn't have `formatLong` property", function () {
-    //   var customLocale = {
-    //     formatLong: {},
-    //   };
-    //   var block = format.bind(null, date, "yyyy-MM-dd", {
-    //     locale: customLocale,
-    //   });
-    //   assert.throws(block, RangeError);
-    // });
-
-    // it("throws `RangeError` if `options.locale` doesn't have `localize` property", function () {
-    //   const customLocale = {
-    //     localize: {},
-    //   };
-    //   const block = format.bind(null, date, "yyyy-MM-dd", {
-    //     locale: customLocale,
-    //   });
-    //   assert.throws(block, RangeError);
-    //   assert.throws(
-    //     block,
-    //     /(Use `yyyy` instead of `YYYY` \(in `YYYY-MM-dd`\) for formatting years to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
-    //   )
-    // });
-  });
+  // it("throws `RangeError` if `options.locale` doesn't have `localize` property", function () {
+  //   const customLocale = {
+  //     localize: {},
+  //   };
+  //   const block = format.bind(null, date, "yyyy-MM-dd", {
+  //     locale: customLocale,
+  //   });
+  //   assert.throws(block, RangeError);
+  //   assert.throws(
+  //     block,
+  //     /(Use `yyyy` instead of `YYYY` \(in `YYYY-MM-dd`\) for formatting years to the input `Fri Apr 04 1986 10:32:55).*(`; see: https:\/\/git.io\/fxCyr)/g
+  //   )
+  // });
+  // });
 
   // it('throws `RangeError` if `options.weekStartsOn` is not convertable to 0, 1, ..., 6 or undefined', function () {
-  //   // @ts-ignore
-  //   var block = format.bind(null, new Date(2007, 11 /* Dec */, 31), 'yyyy', {
+  //
+  //   const block = format.bind(null, new Date(2007, 11 /* Dec */, 31), 'yyyy', {
   //     weekStartsOn: NaN,
   //   })
   //   assert.throws(block, RangeError)
   // })
 
-  // it('throws `RangeError` if `options.firstWeekContainsDate` is not convertable to 1, 2, ..., 7 or undefined', function () {
-  //   // @ts-ignore
-  //   var block = format.bind(null, new Date(2007, 11 /* Dec */, 31), 'yyyy', {
+  // it("throws `RangeError` if `options.firstWeekContainsDate` is not convertable to 1, 2, ..., 7 or undefined", function () {
+  //   const block = format.bind(null, new Date(2007, 11 /* Dec */, 31), "yyyy", {
+  //     // @ts-expect-error
   //     firstWeekContainsDate: NaN,
-  //   })
-  //   assert.throws(block, RangeError)
-  // })
+  //   });
+  //   // assert.throws(block, RangeError);
+  //   expect(
+  //     format.bind(null, new Date(2007, 11 /* Dec */, 31), "yyyy", {
+  //       // @ts-expect-error
+  //       firstWeekContainsDate: NaN,
+  //     }),
+  //   ).toThrowError("1sdf");
+  // });
 
-  it("throws RangeError exception if the format string contains an unescaped latin alphabet character", function () {
-    assert.throws(format.bind(null, date, "yyyy-MM-dd-nnnn"), RangeError);
-  });
-
-  // it('throws `TypeError` exception if passed less than 2 arguments', function() {
-  //   assert.throws(format.bind(null), RangeError)
-  //   assert.throws(format.bind(null, 1), RangeError)
-  //   assert.throws(
-  //       () =>
-  //         format.bind(null),
-  //       /RangeError: Invalid time zone specified: bad\/timeZone$/,
-  //     );
-  // })
-  test("throws `TypeError` exception if passed less than 2 arguments", () => {
-    expect(format.bind(null)).toThrowError("Invalid time value");
-    expect(format.bind(null, 1)).toThrowError(
-      "Format string contains an unescaped latin alphabet character `n`",
-    );
-  });
-
-  describe("useAdditionalWeekYearTokens and useAdditionalDayOfYearTokens options", () => {
-    test("throws an error if D token is used", () => {
-      expect(format.bind(null, date, "yyyy-MM-D")).toThrowError(
-        "Use `d` instead of `D` (in `yyyy-MM-D`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
-      );
-    });
-
-    it("allows D token if useAdditionalDayOfYearTokens is set to true", () => {
-      const result = format(date, "yyyy-MM-D", {
-        useAdditionalDayOfYearTokens: true,
-      });
-      assert.deepEqual(result, "1986-04-94");
-    });
-
-    test("throws an error if DD token is used", () => {
-      expect(format.bind(null, date, "yyyy-MM-DD")).toThrowError(
-        "Use `dd` instead of `DD` (in `yyyy-MM-DD`) for formatting days of the month to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
-      );
-    });
-
-    it("allows DD token if useAdditionalDayOfYearTokens is set to true", () => {
-      const result = format(date, "yyyy-MM-DD", {
-        useAdditionalDayOfYearTokens: true,
-      });
-      assert.deepEqual(result, "1986-04-94");
-    });
-
-    test("throws an error if YY token is used", () => {
-      expect(format.bind(null, date, "YY-MM-dd")).toThrowError(
-        "Use `yy` instead of `YY` (in `YY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
-      );
-    });
-
-    test("allows YY token if useAdditionalWeekYearTokens is set to true", () => {
-      expect(
-        format(date, "YY-MM-dd", {
-          useAdditionalWeekYearTokens: true,
-        }),
-      ).toEqual("86-04-04");
-    });
-
-    test("throws an error if YYYY token is used", () => {
-      expect(format.bind(null, date, "YYYY-MM-dd")).toThrowError(
-        "Use `yyyy` instead of `YYYY` (in `YYYY-MM-dd`) for formatting years to the input `Fri Apr 04 1986 10:32:55 GMT+0000 (GMT)`; see: https://github.com/date-fns/date-fns/blob/master/docs/unicodeTokens.md",
-      );
-    });
-
-    it("allows YYYY token if useAdditionalWeekYearTokens is set to true", () => {
-      const result = format(date, "YYYY-MM-dd", {
-        useAdditionalWeekYearTokens: true,
-      });
-      assert.deepEqual(result, "1986-04-04");
-    });
+  it("throws `TypeError` exception if passed less than 2 arguments", function () {
+    // @ts-expect-error
+    assert.throws(format.bind(), RangeError);
+    // @ts-expect-error
+    assert.throws(format.bind(null), RangeError);
   });
 });

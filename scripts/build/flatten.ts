@@ -1,6 +1,6 @@
 #!/usr/bin/env npx tsx
 
-import assert from "assert";
+import assert from "node:assert";
 import { readFile, readdir, rmdir, stat, unlink, writeFile } from "fs/promises";
 import { dirname, join, relative, resolve } from "path";
 

@@ -1,11 +1,11 @@
-import assert from "assert";
+import assert from "node:assert";
 import { describe, it } from "vitest";
 import { formatInTimeZone } from "./index";
 
 describe("formatInTimeZone", function () {
   describe("shifts the date to the zoned time and formats", function () {
-    var date = "1986-04-04T10:32:55.123Z";
-    var tests = [
+    const date = "1986-04-04T10:32:55.123Z";
+    const tests = [
       {
         expected: "04.04.1986 12:32 UTC+02:00",
         format: "dd.MM.yyyy HH:mm 'UTC'xxx",
@@ -47,7 +47,7 @@ describe("formatInTimeZone", function () {
   });
 
   it("throws a RangeError on invalid time zones", function () {
-    var date = "1986-04-04T10:32:55.123Z";
+    const date = "1986-04-04T10:32:55.123Z";
     assert.throws(
       formatInTimeZone.bind(null, date, "02:65", "dd.MM.yyyy HH:mm 'UTC'xxx"),
       RangeError,

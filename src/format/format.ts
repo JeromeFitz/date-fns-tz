@@ -317,11 +317,11 @@ const tzFormattingTokensRegExp = /([xXOz]+)|''|'(''|[^'])+('|$)/g;
  * var result = format(new Date(2014, 6, 2, 15), "h 'o''clock'")
  * //=> "3 o'clock"
  */
-function format(
-  dirtyDate: Date | number,
+function format<DateType extends Date>(
+  dirtyDate: DateType | number | string,
   dirtyFormatStr: string,
-  dirtyOptions?: OptionsWithTZ | any,
-) {
+  dirtyOptions?: OptionsWithTZ,
+): string {
   let formatStr = String(dirtyFormatStr);
   const options = dirtyOptions || {};
 

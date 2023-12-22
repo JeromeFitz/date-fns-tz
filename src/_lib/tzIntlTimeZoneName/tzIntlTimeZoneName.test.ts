@@ -1,15 +1,15 @@
-import assert from "assert";
+import assert from "node:assert";
 import { describe, it } from "vitest";
 import { tzIntlTimeZoneName } from "./index";
 
 describe("tzIntlTimeZoneName", function () {
   it("returns the short time zone name", function () {
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "Europe/Paris";
-    var result = tzIntlTimeZoneName("short", date, { timeZone });
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "Europe/Paris";
+    const result = tzIntlTimeZoneName("short", date, { timeZone });
 
     // When no locale is specified the system locale is used
-    var expectedResult = Intl.DateTimeFormat(undefined, {
+    const expectedResult = Intl.DateTimeFormat(undefined, {
       timeZone,
       timeZoneName: "short",
     })
@@ -21,12 +21,12 @@ describe("tzIntlTimeZoneName", function () {
   });
 
   it("returns year through second tokens of the local date in the time zone", function () {
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "Europe/Paris";
-    var result = tzIntlTimeZoneName("long", date, { timeZone });
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "Europe/Paris";
+    const result = tzIntlTimeZoneName("long", date, { timeZone });
 
     // When no locale is specified the system locale is used
-    var expectedResult = Intl.DateTimeFormat(undefined, {
+    const expectedResult = Intl.DateTimeFormat(undefined, {
       timeZone,
       timeZoneName: "long",
     })
@@ -38,25 +38,25 @@ describe("tzIntlTimeZoneName", function () {
   });
 
   it("returns the short time zone name in the specified locale", function () {
-    var locale = { code: "en-GB" };
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "Europe/Paris";
-    var result = tzIntlTimeZoneName("short", date, { timeZone, locale });
+    const locale = { code: "en-GB" };
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "Europe/Paris";
+    const result = tzIntlTimeZoneName("short", date, { timeZone, locale });
     assert.equal(result, "CEST");
   });
 
   it("returns year through second tokens of the local date in the time zone", function () {
-    var locale = { code: "en-GB" };
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "Europe/Paris";
-    var result = tzIntlTimeZoneName("long", date, { timeZone, locale });
+    const locale = { code: "en-GB" };
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "Europe/Paris";
+    const result = tzIntlTimeZoneName("long", date, { timeZone, locale });
     assert.equal(result, "Central European Summer Time");
   });
 
   it("an invalid time zone throws a range error", function () {
-    var locale = { code: "en-GB" };
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "bad/timeZone";
+    const locale = { code: "en-GB" };
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "bad/timeZone";
     assert.throws(
       tzIntlTimeZoneName.bind(null, "long", date, { timeZone, locale }),
       RangeError,
@@ -64,10 +64,10 @@ describe("tzIntlTimeZoneName", function () {
   });
 
   it("returns the short time zone name in the vi locale", function () {
-    var locale = { code: "vi" };
-    var date = new Date("2014-10-25T13:46:20Z");
-    var timeZone = "Europe/Paris";
-    var result = tzIntlTimeZoneName("short", date, { timeZone, locale });
+    const locale = { code: "vi" };
+    const date = new Date("2014-10-25T13:46:20Z");
+    const timeZone = "Europe/Paris";
+    const result = tzIntlTimeZoneName("short", date, { timeZone, locale });
     assert.equal(result, "GMT+2");
   });
 });

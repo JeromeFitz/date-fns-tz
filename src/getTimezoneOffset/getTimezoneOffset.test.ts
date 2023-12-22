@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { describe, it } from "vitest";
 import { getTimezoneOffset } from "./index";
 
@@ -68,17 +68,17 @@ describe("getTimezoneOffset", function () {
 
   describe("near DST changeover (AEST to AEDT)", function () {
     it("one day before", function () {
-      var date = new Date("2020-10-04T00:45:00.000Z");
+      const date = new Date("2020-10-04T00:45:00.000Z");
       assert.equal(getTimezoneOffset("Australia/Melbourne", date), 10 * hours);
     });
 
     it("15 minutes before", function () {
-      var date = new Date("2020-10-04T01:45:00.000Z");
+      const date = new Date("2020-10-04T01:45:00.000Z");
       assert.equal(getTimezoneOffset("Australia/Melbourne", date), 10 * hours);
     });
 
     it("15 minutes after", function () {
-      var date = new Date("2020-10-04T03:15:00.000Z");
+      const date = new Date("2020-10-04T03:15:00.000Z");
       assert.equal(getTimezoneOffset("Australia/Melbourne", date), 11 * hours);
     });
   });

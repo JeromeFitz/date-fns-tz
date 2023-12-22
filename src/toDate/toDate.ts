@@ -83,8 +83,8 @@ const patterns = {
  * var result = toDate('+02014101', {additionalDigits: 1})
  * //=> Fri Apr 11 2014 00:00:00
  */
-function toDate(
-  argument: Date | string | number,
+function toDate<DateType extends Date>(
+  argument: DateType | number | string,
   dirtyOptions?: OptionsWithTZ,
 ) {
   if (arguments.length < 1) {

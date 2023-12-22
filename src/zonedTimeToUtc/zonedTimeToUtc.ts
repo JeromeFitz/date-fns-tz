@@ -29,8 +29,8 @@ import type { OptionsWithTZ } from "../types";
  * const result = zonedTimeToUtc(new Date(2014, 5, 25, 10, 0, 0), 'America/Los_Angeles')
  * //=> 2014-06-25T17:00:00.000Z
  */
-function zonedTimeToUtc(
-  date: Date | string | number,
+function zonedTimeToUtc<DateType extends Date>(
+  date: DateType | number | string,
   timeZone: string,
   options?: OptionsWithTZ,
 ) {

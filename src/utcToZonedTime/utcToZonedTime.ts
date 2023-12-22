@@ -26,8 +26,8 @@ import { toDate } from "../toDate/index";
  * const result = utcToZonedTime('2014-06-25T10:00:00.000Z', 'America/New_York')
  * //=> Jun 25 2014 06:00:00
  */
-function utcToZonedTime(
-  dirtyDate: Date | string | number,
+function utcToZonedTime<DateType extends Date>(
+  dirtyDate: DateType | number | string,
   timeZone: string,
   options?: OptionsWithTZ,
 ) {

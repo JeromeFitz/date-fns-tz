@@ -25,8 +25,8 @@ import { utcToZonedTime } from "../utcToZonedTime/utcToZonedTime";
  * @param {String} [options.timeZone=''] - used to specify the IANA time zone offset of a date String.
  * @returns {String} the formatted date string
  */
-function formatInTimeZone(
-  date: Date | string | number,
+function formatInTimeZone<DateType extends Date>(
+  date: DateType | number | string,
   timeZone: string,
   formatStr: string,
   options?: OptionsWithTZ,

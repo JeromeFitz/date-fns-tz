@@ -1,4 +1,4 @@
-import assert from "assert";
+import assert from "node:assert";
 import { describe, it } from "vitest";
 import { tzParseTimezone } from "./index";
 
@@ -36,7 +36,7 @@ describe("tzParseTimezone", function () {
   });
 
   it("IANA time zone", function () {
-    var date = new Date("2014-10-25T13:46:20.000Z");
+    const date = new Date("2014-10-25T13:46:20.000Z");
     assert.equal(tzParseTimezone("America/New_York", date), 240 * 60 * 1000);
     assert.equal(tzParseTimezone("Europe/Paris", date), -120 * 60 * 1000);
     assert.equal(tzParseTimezone("Asia/Ust-Nera", date), -660 * 60 * 1000);
@@ -54,7 +54,7 @@ describe("tzParseTimezone", function () {
 
   describe("near DST changeover (AEST to AEDT)", function () {
     it("one day before", function () {
-      var date = new Date("2020-10-04T00:45:00.000Z");
+      const date = new Date("2020-10-04T00:45:00.000Z");
       assert.equal(
         tzParseTimezone("Australia/Melbourne", date),
         -10 * 60 * 60 * 1000,
@@ -62,7 +62,7 @@ describe("tzParseTimezone", function () {
     });
 
     it("15 minutes before", function () {
-      var date = new Date("2020-10-04T01:45:00.000Z");
+      const date = new Date("2020-10-04T01:45:00.000Z");
       assert.equal(
         tzParseTimezone("Australia/Melbourne", date),
         -10 * 60 * 60 * 1000,
@@ -70,7 +70,7 @@ describe("tzParseTimezone", function () {
     });
 
     it("15 minutes after", function () {
-      var date = new Date("2020-10-04T03:15:00.000Z");
+      const date = new Date("2020-10-04T03:15:00.000Z");
       assert.equal(
         tzParseTimezone("Australia/Melbourne", date),
         -11 * 60 * 60 * 1000,
