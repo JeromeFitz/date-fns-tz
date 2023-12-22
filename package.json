@@ -22,7 +22,8 @@
   "main": "./index.js",
   "module": "./index.mjs",
   "scripts": {
-    "build": "./scripts/build/build.sh && pnpm prettier",
+    "_": "pnpm test && pnpm build && pnpm prettier && pnpm package",
+    "build": "./scripts/build/build.sh",
     "clean": "rm -rf ./lib && rm tmp/docs.json",
     "lint": "eslint .",
     "package": "./scripts/build/package.sh",
