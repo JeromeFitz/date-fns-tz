@@ -25,7 +25,6 @@
     "build": "./scripts/build/build.sh && pnpm prettier",
     "clean": "rm -rf ./lib && rm tmp/docs.json",
     "lint": "eslint .",
-    "locale-snapshots": "env TZ=utc tsx ./scripts/build/localeSnapshots/index.ts",
     "package": "./scripts/build/package.sh",
     "prettier": "prettier . --write",
     "stats": "cloc . --exclude-dir=.git,node_modules,lib,tmp",

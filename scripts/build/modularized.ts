@@ -10,7 +10,6 @@
 
 import { readdir, writeFile, readFile } from "fs/promises";
 import { basename, dirname, join, resolve } from "path";
-import { convertLocaleToConst } from "./localeSnapshots/_lib/locale.js";
 
 const root = resolve(process.env.PACKAGE_OUTPUT_PATH || "lib");
 
@@ -70,5 +69,5 @@ function isModule(relativePath: string) {
 
 function constName(relativePath: string) {
   const base = basename(dirname(relativePath));
-  return localeRe.test(relativePath) ? convertLocaleToConst(base) : base;
+  return base;
 }
