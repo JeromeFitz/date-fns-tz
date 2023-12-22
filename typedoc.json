@@ -7,8 +7,7 @@
     "./src/getTimezoneOffset/index.ts",
     "./src/toDate/index.ts",
     "./src/utcToZonedTime/index.ts",
-    "./src/zonedTimeToUtc/index.ts",
-    "./src/constants/index.ts"
+    "./src/zonedTimeToUtc/index.ts"
   ],
   "json": "./tmp/docs.json",
   "plugin": ["typedoc-plugin-missing-exports"]

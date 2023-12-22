@@ -29,10 +29,10 @@ module.exports.config = {
   ],
 
   kindsMap: {
-    "src/constants/index.ts": {
-      kind: "constants",
-      category: "Misc",
-    },
+    // "src/constants/index.ts": {
+    //   kind: "constants",
+    //   category: "Misc",
+    // },
   },
   staticDocs: [],
 

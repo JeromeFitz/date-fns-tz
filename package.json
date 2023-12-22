@@ -103,16 +103,6 @@
         "default": "./index.mjs"
       }
     },
-    "./constants": {
-      "require": {
-        "types": "./constants.d.ts",
-        "default": "./constants.js"
-      },
-      "import": {
-        "types": "./constants.d.mts",
-        "default": "./constants.mjs"
-      }
-    },
     "./fp": {
       "require": {
         "types": "./fp.d.ts",

@@ -60,8 +60,7 @@ for pattern in CHANGELOG.md \
   package.json \
   docs \
   LICENSE.md \
-  README.md \
-  SECURITY.md
+  README.md
 do
   cp -r "$pattern" "$dir"
 done

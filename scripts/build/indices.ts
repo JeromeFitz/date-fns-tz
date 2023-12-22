@@ -68,7 +68,7 @@ async function generatePackageJSON({
       ],
     ]
       // .concat(mapExports(["./constants", "./locale", "./fp"], "."))
-      .concat(mapExports(["./constants", "./fp"], "."))
+      .concat(mapExports(["./fp"], "."))
       .concat(mapExports(mapFiles(fns)))
       .concat(mapExports(mapFiles(fpFns), "./fp")),
     // .concat(mapExports(mapFiles(locales), "./locale"))
@@ -132,9 +132,8 @@ function generateTypeDoc(fns: Awaited<ReturnType<typeof listFns>>) {
     JSON.stringify(
       {
         name: "date-fns",
-        entryPoints: fns
-          .map((fn) => fn.fullPath)
-          .concat("./src/constants/index.ts"),
+        entryPoints: fns.map((fn) => fn.fullPath),
+        // .concat("./src/constants/index.ts"),
         json: "./tmp/docs.json",
         plugin: ["typedoc-plugin-missing-exports"],
       },
