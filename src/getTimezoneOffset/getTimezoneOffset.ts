@@ -29,7 +29,8 @@ import { tzParseTimezone } from "../_lib/tzParseTimezone/index";
  */
 function getTimezoneOffset<DateType extends Date>(
   timeZone: string,
-  date?: DateType | number | string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  date?: DateType | number | string | any,
 ) {
   return -tzParseTimezone(timeZone, date);
 }

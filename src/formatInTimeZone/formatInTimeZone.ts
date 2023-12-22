@@ -30,7 +30,7 @@ function formatInTimeZone<DateType extends Date>(
   timeZone: string,
   formatStr: string,
   options?: OptionsWithTZ,
-) {
+): string {
   const extendedOptions = cloneObject(options);
   extendedOptions.timeZone = timeZone;
   return format(utcToZonedTime(date, timeZone), formatStr, extendedOptions);

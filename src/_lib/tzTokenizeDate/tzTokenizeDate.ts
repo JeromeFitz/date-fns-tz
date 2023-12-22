@@ -2,7 +2,10 @@
  * Returns the [year, month, day, hour, minute, seconds] tokens of the provided
  * `date` as it will be rendered in the `timeZone`.
  */
-function tzTokenizeDate(date, timeZone) {
+function tzTokenizeDate<DateType extends Date = Date>(
+  date: DateType | number | string,
+  timeZone: string,
+) {
   const dtf = getDateTimeFormat(timeZone);
   return dtf.formatToParts ? partsOffset(dtf, date) : hackyOffset(dtf, date);
 }
@@ -16,7 +19,8 @@ const typeToPos = {
   second: 5,
 };
 
-function partsOffset(dtf, date) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function partsOffset(dtf: { formatToParts: (arg0: any) => any }, date: any) {
   try {
     const formatted = dtf.formatToParts(date);
     const filled = [];
@@ -38,7 +42,8 @@ function partsOffset(dtf, date) {
   }
 }
 
-function hackyOffset(dtf, date) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function hackyOffset(dtf: { format: (arg0: any) => string }, date: any) {
   const formatted = dtf.format(date).replace(/\u200E/g, "");
   const parsed = /(\d+)\/(\d+)\/(\d+),? (\d+):(\d+):(\d+)/.exec(formatted);
   // // var [, fMonth, fDay, fYear, fHour, fMinute, fSecond] = parsed
@@ -52,7 +57,8 @@ function hackyOffset(dtf, date) {
 // to get deterministic local date/time output according to the `en-US` locale which
 // can be used to extract local time parts as necessary.
 const dtfCache = {};
-function getDateTimeFormat(timeZone) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function getDateTimeFormat(timeZone: any) {
   if (!dtfCache[timeZone]) {
     // New browsers use `hourCycle`, IE and Chrome <73 does not support it and uses `hour12`
     const testDateFormatted = new Intl.DateTimeFormat("en-US", {

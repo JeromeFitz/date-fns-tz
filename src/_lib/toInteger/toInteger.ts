@@ -1,4 +1,4 @@
-function toInteger(dirtyNumber) {
+function toInteger(dirtyNumber: number | boolean): number {
   if (dirtyNumber === null || dirtyNumber === true || dirtyNumber === false) {
     return NaN;
   }

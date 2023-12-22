@@ -12,9 +12,13 @@ const patterns = {
 };
 
 // Parse various time zone offset formats to an offset in milliseconds
-function tzParseTimezone(timezoneString, date?, isUtcDate?) {
-  let token;
-  let absoluteOffset;
+function tzParseTimezone<DateType extends Date = Date>(
+  timezoneString: string,
+  date?: DateType,
+  isUtcDate?: boolean,
+) {
+  let token: string[];
+  let absoluteOffset: number;
 
   // Empty string
   if (!timezoneString) {
@@ -27,7 +31,7 @@ function tzParseTimezone(timezoneString, date?, isUtcDate?) {
     return 0;
   }
 
-  let hours;
+  let hours: number;
 
   // ±hh
   token = patterns.timezoneHH.exec(timezoneString);
@@ -58,14 +62,15 @@ function tzParseTimezone(timezoneString, date?, isUtcDate?) {
 
   // IANA time zone
   if (isValidTimezoneIANAString(timezoneString)) {
-    date = new Date(date || Date.now());
-    const utcDate = isUtcDate ? date : toUtcDate(date);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const _date: any = new Date(date || Date.now());
+    const utcDate = isUtcDate ? _date : toUtcDate(_date);
 
     const offset = calcOffset(utcDate, timezoneString);
 
     const fixedOffset = isUtcDate
       ? offset
-      : fixOffset(date, offset, timezoneString);
+      : fixOffset(_date, offset, timezoneString);
 
     return -fixedOffset;
   }
@@ -73,7 +78,15 @@ function tzParseTimezone(timezoneString, date?, isUtcDate?) {
   return NaN;
 }
 
-function toUtcDate(date) {
+function toUtcDate(date: {
+  getFullYear: () => number;
+  getMonth: () => number;
+  getDate: () => number;
+  getHours: () => number;
+  getMinutes: () => number;
+  getSeconds: () => number;
+  getMilliseconds: () => number;
+}) {
   return newDateUTC(
     date.getFullYear(),
     date.getMonth(),
@@ -85,7 +98,11 @@ function toUtcDate(date) {
   );
 }
 
-function calcOffset(date, timezoneString) {
+function calcOffset<DateType extends Date = Date>(
+  date: DateType,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  timezoneString: any,
+) {
   const tokens = tzTokenizeDate(date, timezoneString);
 
   // ms dropped because it's not provided by tzTokenizeDate
@@ -109,7 +126,13 @@ function calcOffset(date, timezoneString) {
   return asUTC - asTS;
 }
 
-function fixOffset(date, offset, timezoneString) {
+function fixOffset(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  date: { getTime: () => any },
+  offset: number,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  timezoneString: any,
+) {
   const localTS = date.getTime();
 
   // Our UTC time is just a guess because our offset is just a guess
@@ -136,7 +159,7 @@ function fixOffset(date, offset, timezoneString) {
   return Math.max(o2, o3);
 }
 
-function validateTimezone(hours, minutes) {
+function validateTimezone(hours: number, minutes: number) {
   return (
     -23 <= hours &&
     hours <= 23 &&
@@ -145,7 +168,8 @@ function validateTimezone(hours, minutes) {
 }
 
 const validIANATimezoneCache = {};
-function isValidTimezoneIANAString(timeZoneString) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isValidTimezoneIANAString(timeZoneString: any) {
   if (validIANATimezoneCache[timeZoneString]) return true;
   try {
     new Intl.DateTimeFormat(undefined, { timeZone: timeZoneString });

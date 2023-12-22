@@ -86,7 +86,7 @@ const patterns = {
 function toDate<DateType extends Date>(
   argument: DateType | number | string,
   dirtyOptions?: OptionsWithTZ,
-) {
+): Date {
   if (arguments.length < 1) {
     throw new TypeError(
       "1 argument required, but only " + arguments.length + " present",
@@ -142,7 +142,7 @@ function toDate<DateType extends Date>(
 
   const date = parseDate(restDateString, year);
 
-  if (isNaN(date)) {
+  if (!date || isNaN(date.getTime())) {
     return new Date(NaN);
   }
 
@@ -150,7 +150,7 @@ function toDate<DateType extends Date>(
     const timestamp = date.getTime();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let time: any = 0;
-    let offset;
+    let offset: number;
 
     if (dateStrings.time) {
       time = parseTime(dateStrings.time);
@@ -182,11 +182,11 @@ function toDate<DateType extends Date>(
   }
 }
 
-function splitDateString(dateString) {
+function splitDateString(dateString: string) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const dateStrings: any = {};
   let parts = patterns.dateTimePattern.exec(dateString);
-  let timeString;
+  let timeString: string;
 
   if (!parts) {
     parts = patterns.datePattern.exec(dateString);
@@ -215,11 +215,13 @@ function splitDateString(dateString) {
   return dateStrings;
 }
 
-function parseYear(dateString, additionalDigits) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseYear(dateString: string | any | any[], additionalDigits: number) {
   const patternYYY = patterns.YYY[additionalDigits];
   const patternYYYYY = patterns.YYYYY[additionalDigits];
 
-  let token;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let token: any[];
 
   // YYYY or ±YYYYY
   token = patterns.YYYY.exec(dateString) || patternYYYYY.exec(dateString);
@@ -247,16 +249,17 @@ function parseYear(dateString, additionalDigits) {
   };
 }
 
-function parseDate(dateString, year) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function parseDate(dateString: string | any | any[], year: null) {
   // Invalid ISO-formatted year
   if (year === null) {
     return null;
   }
 
-  let token;
-  let date;
-  let month;
-  let week;
+  let token: string[];
+  let date: Date;
+  let month: number;
+  let week: number;
 
   // YYYY
   if (dateString.length === 0) {
@@ -337,10 +340,10 @@ function parseDate(dateString, year) {
   return null;
 }
 
-function parseTime(timeString) {
-  let token;
-  let hours;
-  let minutes;
+function parseTime(timeString: string) {
+  let token: string[];
+  let hours: number;
+  let minutes: number;
 
   // hh
   token = patterns.HH.exec(timeString);
@@ -391,7 +394,7 @@ function parseTime(timeString) {
   return null;
 }
 
-function dayOfISOWeekYear(isoWeekYear, week, day?) {
+function dayOfISOWeekYear(isoWeekYear: number, week: number, day?: number) {
   week = week || 0;
   day = day || 0;
   const date = new Date(0);
@@ -409,11 +412,11 @@ const DAYS_IN_MONTH_LEAP_YEAR = [
   31, 29, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31,
 ];
 
-function isLeapYearIndex(year) {
+function isLeapYearIndex(year: number) {
   return year % 400 === 0 || (year % 4 === 0 && year % 100 !== 0);
 }
 
-function validateDate(year, month, date?) {
+function validateDate(year: number, month: number, date?: number) {
   if (month < 0 || month > 11) {
     return false;
   }
@@ -435,7 +438,7 @@ function validateDate(year, month, date?) {
   return true;
 }
 
-function validateDayOfYearDate(year, dayOfYear) {
+function validateDayOfYearDate(year: number, dayOfYear: number) {
   if (dayOfYear < 1) {
     return false;
   }
@@ -451,7 +454,7 @@ function validateDayOfYearDate(year, dayOfYear) {
   return true;
 }
 
-function validateWeekDate(year, week, day?) {
+function validateWeekDate(year: number, week: number, day?: number) {
   if (week < 0 || week > 52) {
     return false;
   }
@@ -463,7 +466,7 @@ function validateWeekDate(year, week, day?) {
   return true;
 }
 
-function validateTime(hours, minutes?, seconds?) {
+function validateTime(hours: number, minutes?: number, seconds?: number) {
   if (hours != null && (hours < 0 || hours >= 25)) {
     return false;
   }

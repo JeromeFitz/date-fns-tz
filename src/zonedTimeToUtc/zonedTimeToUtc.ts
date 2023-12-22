@@ -33,7 +33,7 @@ function zonedTimeToUtc<DateType extends Date>(
   date: DateType | number | string,
   timeZone: string,
   options?: OptionsWithTZ,
-) {
+): Date {
   if (typeof date === "string" && !date.match(tzPattern)) {
     const extendedOptions = cloneObject(options);
     extendedOptions.timeZone = timeZone;

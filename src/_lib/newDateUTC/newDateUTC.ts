@@ -5,7 +5,15 @@
  *
  * For `Date.UTC(...)`, use `newDateUTC(...).getTime()`.
  */
-function newDateUTC(fullYear, month, day, hour, minute, second, millisecond) {
+function newDateUTC(
+  fullYear: number,
+  month: number,
+  day: number,
+  hour: number,
+  minute: number,
+  second: number,
+  millisecond: number,
+): Date {
   const utcDate = new Date(0);
   utcDate.setUTCFullYear(fullYear, month, day);
   utcDate.setUTCHours(hour, minute, second, millisecond);
