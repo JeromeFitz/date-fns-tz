@@ -54,23 +54,25 @@ async function main() {
 }
 
 function getNewImportPath(filePath: string, relImportPath: string): string {
-  const isLocale = relImportPath === "date-fns/locale";
+  // const isLocale = relImportPath === "date-fns/locale";
+  const isDateFns = relImportPath.includes("date-fns");
 
   const importPath = resolvePath(filePath, relImportPath);
 
-  // console.dir(`---`)
-  // console.dir(`filePath: ${filePath}`)
-  // console.dir(`relImportPath: ${relImportPath}`)
-  // console.dir(`importPath: ${importPath}`)
-
+  // if (isDateFns) {
+  //   console.dir(`---`);
+  //   console.dir(`filePath: ${filePath}`);
+  //   console.dir(`relImportPath: ${relImportPath}`);
+  //   console.dir(`importPath: ${importPath}`);
+  // }
   const newFilePath = getNewPath(filePath);
   const newFullImportPath = getNewPath(importPath);
 
   // Determine the relative path between newFilePath and newFullImportPath
   const newImportPath = relative(dirname(newFilePath), newFullImportPath);
 
-  return isLocale
-    ? "date-fns/locale"
+  return isDateFns
+    ? relImportPath
     : newImportPath.startsWith(".")
       ? newImportPath
       : "./" + newImportPath;

@@ -1,6 +1,6 @@
 {
   "name": "@jeromefitz/date-fns-tz",
-  "version": "3.0.0-canary.2",
+  "version": "3.0.0-canary.3",
   "sideEffects": false,
   "description": "Time zone support for date-fns v3 with the Intl API",
   "author": "Marnus Weststrate <marnusw@gmail.com>",
