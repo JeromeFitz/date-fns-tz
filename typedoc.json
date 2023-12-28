@@ -1,0 +1,14 @@
+// This file is generated automatically by `scripts/build/indices.ts`. Please, don't change it.
+{
+  "name": "date-fns",
+  "entryPoints": [
+    "./src/format/index.ts",
+    "./src/formatInTimeZone/index.ts",
+    "./src/getTimezoneOffset/index.ts",
+    "./src/toDate/index.ts",
+    "./src/utcToZonedTime/index.ts",
+    "./src/zonedTimeToUtc/index.ts"
+  ],
+  "json": "./tmp/docs.json",
+  "plugin": ["typedoc-plugin-missing-exports"]
+}

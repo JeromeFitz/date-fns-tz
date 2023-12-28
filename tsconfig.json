@@ -1,22 +1,21 @@
 {
   "compilerOptions": {
     "target": "es6",
-    "lib": ["dom", "es2017", "es2018.promise"],
+    "outDir": "lib",
+    "lib": ["dom", "es2020", "es2018.promise", "ESNext.Intl"],
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "noImplicitAny": false, // @todo
+    "skipLibCheck": true,
     "strict": true,
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noImplicitReturns": true,
-    "noImplicitAny": true,
-    "noImplicitThis": true,
-    "strictNullChecks": true,
-    "importHelpers": true,
-    "baseUrl": ".",
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "paths": {}
+    "strictBindCallApply": true,
+    "strictFunctionTypes": false, // @todo
+    "strictNullChecks": false, // @todo
+    "strictPropertyInitialization": false // @todo
+    // TODO: Enable these when we can:
+    // "noUncheckedIndexedAccess": true,
+    // "exactOptionalPropertyTypes": true
   },
-  "include": ["typings.d.ts"],
-  "exclude": ["node_modules", "dist"]
+  "include": ["src/**/*.ts", "scripts/**/*.ts"],
+  "exclude": ["node_modules", "dist", "tmp", "examples"]
 }
