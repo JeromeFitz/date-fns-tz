@@ -1,6 +1,6 @@
 {
   "name": "@jeromefitz/date-fns-tz",
-  "version": "3.0.0-canary.5",
+  "version": "3.0.0-canary.7",
   "sideEffects": false,
   "description": "Time zone support for date-fns v3 with the Intl API",
   "author": "Marnus Weststrate <marnusw@gmail.com>",
@@ -46,7 +46,8 @@
     ]
   },
   "peerDependencies": {
-    "date-fns": "^3.0.0"
+    "date-fns": "^3.0.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@babel/cli": "^7.22.10",
@@ -78,7 +79,7 @@
     "husky": "^8.0.3",
     "js-fns": "^2.5.1",
     "lint-staged": "^15.2.0",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.21",
     "mocha": "^10.2.0",
     "playwright": "^1.40.1",
     "prettier": "^3.1.0",
