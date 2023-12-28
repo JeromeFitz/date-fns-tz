@@ -1,14 +1,8 @@
 # @jeromefitz/date-fns-tz
 
-Testing a 🐦 canary 🐦 version at: `@jeromefitz/date-fnz@3.0.0-canary.4` of the following changes:
-
-- https://github.com/JeromeFitz/date-fns-tz/tree/canary
-
-Please see notes:
+Testing a 🐦 canary 🐦 version at: `@jeromefitz/date-fnz@3.0.0-canary.5` of the following changes:
 
 - https://github.com/JeromeFitz/date-fns-tz/pull/3
-
-And subsequent PRs if needed before using.
 
 README will now resume...
 
