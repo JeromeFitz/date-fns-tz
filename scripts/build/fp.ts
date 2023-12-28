@@ -79,7 +79,8 @@ function getFPFn(sourceName: string, fnName: string, arity: number): string {
   return `// This file is generated automatically by \`scripts/build/fp.ts\`. Please, don't change it.
 
 import { ${sourceName} as fn } from "../../${sourceName}/index.js";
-import { convertToFP } from "../../_lib/convertToFP";
+// @ts-expect-error No types on this export but this is _okay_
+import { convertToFP } from 'date-fns/fp/_lib/convertToFP'
 
 export const ${fnName} = convertToFP(fn, ${arity});
 `;

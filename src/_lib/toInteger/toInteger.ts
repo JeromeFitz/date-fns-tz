@@ -1,3 +1,7 @@
+/**
+ * @todo remove this file
+ * Can assign via Number() instead in: toDate
+ */
 function toInteger(dirtyNumber: number | boolean): number {
   if (dirtyNumber === null || dirtyNumber === true || dirtyNumber === false) {
     return NaN;

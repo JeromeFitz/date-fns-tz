@@ -1,3 +1,7 @@
+/**
+ * @todo remove this file
+ * we can access through `date-fns/fp/_lib/convertToFP`
+ */
 import type { FPArity, FPFn, FPFnInput } from "date-fns";
 
 /**

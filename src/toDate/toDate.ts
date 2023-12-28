@@ -1,4 +1,4 @@
-import { toInteger } from "../_lib/toInteger/index";
+// import { toInteger } from "../_lib/toInteger/index";
 import { getTimezoneOffsetInMilliseconds } from "../_lib/getTimezoneOffsetInMilliseconds/index";
 import { tzParseTimezone } from "../_lib/tzParseTimezone/index";
 import { tzPattern } from "../_lib/tzPattern/index";
@@ -102,7 +102,7 @@ function toDate<DateType extends Date>(
   const additionalDigits =
     options.additionalDigits == null
       ? DEFAULT_ADDITIONAL_DIGITS
-      : toInteger(options.additionalDigits);
+      : Number(options.additionalDigits);
   if (
     additionalDigits !== 2 &&
     additionalDigits !== 1 &&
