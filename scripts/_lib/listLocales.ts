@@ -19,7 +19,7 @@ export async function listLocales(): Promise<LocaleFile[]> {
 
   const _localesFiltered = _filter(
     _locales,
-    (file: string) => !ignorePattern.test(file),
+    (file: string | any) => !ignorePattern.test(file),
   );
   return _map(_localesFiltered, (locale: any) => {
     return {
