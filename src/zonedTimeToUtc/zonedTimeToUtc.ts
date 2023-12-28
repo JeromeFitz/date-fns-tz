@@ -1,4 +1,4 @@
-import cloneObject from "lodash/cloneDeep";
+import cloneObject from "lodash.clonedeep";
 import { toDate } from "../toDate/index";
 import { tzPattern } from "../_lib/tzPattern/index";
 import { tzParseTimezone } from "../_lib/tzParseTimezone/index";

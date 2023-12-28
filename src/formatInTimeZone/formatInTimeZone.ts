@@ -1,5 +1,5 @@
 import type { OptionsWithTZ } from "../types.js";
-import cloneObject from "lodash/cloneDeep";
+import cloneObject from "lodash.clonedeep";
 import { format } from "../format/index";
 import { utcToZonedTime } from "../utcToZonedTime/utcToZonedTime";
 
