@@ -1,3 +1,7 @@
+/**
+ * @todo remove this file
+ * can use: lodash/cloneDeep
+ */
 import { assign } from "../assign/index";
 
 function cloneObject(dirtyObject) {

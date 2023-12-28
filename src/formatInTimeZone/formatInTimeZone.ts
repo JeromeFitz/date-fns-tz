@@ -1,6 +1,6 @@
 import type { OptionsWithTZ } from "../types.js";
-import { cloneObject } from "../_lib/cloneObject/index";
-// import { cloneDeep as cloneObject } from "lodash";
+// import { cloneObject } from "../_lib/cloneObject/index";
+import { cloneDeep as cloneObject } from "lodash";
 import { format } from "../format/index";
 import { utcToZonedTime } from "../utcToZonedTime/utcToZonedTime";
 
@@ -32,7 +32,7 @@ function formatInTimeZone<DateType extends Date>(
   formatStr: string,
   options?: OptionsWithTZ,
 ): string {
-  const extendedOptions = cloneObject(options);
+  const extendedOptions = cloneObject(options || {});
   extendedOptions.timeZone = timeZone;
   return format(utcToZonedTime(date, timeZone), formatStr, extendedOptions);
 }

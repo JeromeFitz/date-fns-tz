@@ -1,4 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/**
+ * @todo remove this file
+ * can use: lodash/cloneDeep via ../cloneObject
+ */
 function assign(
   target: { [x: string]: any } | null,
   dirtyObject: { [x: string]: any },

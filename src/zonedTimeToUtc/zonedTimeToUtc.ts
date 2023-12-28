@@ -1,5 +1,5 @@
-import { cloneObject } from "../_lib/cloneObject/index";
-// import { cloneDeep as cloneObject } from "lodash";
+// import { cloneObject } from "../_lib/cloneObject/index";
+import { cloneDeep as cloneObject } from "lodash";
 import { toDate } from "../toDate/index";
 import { tzPattern } from "../_lib/tzPattern/index";
 import { tzParseTimezone } from "../_lib/tzParseTimezone/index";
@@ -36,7 +36,7 @@ function zonedTimeToUtc<DateType extends Date>(
   options?: OptionsWithTZ,
 ): Date {
   if (typeof date === "string" && !date.match(tzPattern)) {
-    const extendedOptions = cloneObject(options);
+    const extendedOptions = cloneObject(options || {});
     extendedOptions.timeZone = timeZone;
     return toDate(date, extendedOptions);
   }
